@@ -5,6 +5,7 @@ namespace TippingCanoe\Phperclip;
 use Illuminate\Foundation\Application;
 use TippingCanoe\Phperclip\Model\File as FileModel;
 use TippingCanoe\Phperclip\Model\Clippable;
+use TippingCanoe\Phperclip\Processes\ProcessManager;
 use TippingCanoe\Phperclip\Repository\File as FileRepository;
 use Symfony\Component\HttpFoundation\File\File;
 
@@ -31,6 +32,11 @@ class Service {
 	protected $currentDriver;
 
 	/**
+	 * @var \TippingCanoe\Phperclip\Processes\ProcessManager
+	 */
+	protected $processManager;
+
+	/**
 	 * @var \Illuminate\Foundation\Application
 	 */
 	protected $app;
@@ -44,12 +50,14 @@ class Service {
 	public function __construct(
 		FileRepository $fileRepository,
 		MimeResolver $mimeResolver,
+		ProcessManager $processManager,
 		Application $app,
 		array $storageDrivers
 	) {
 
 		$this->fileRepository = $fileRepository;
 		$this->mimeResolver = $mimeResolver;
+		$this->processManager = $processManager;
 		$this->app = $app;
 
 		if(empty($storageDrivers))
@@ -140,15 +148,17 @@ class Service {
 	 */
 	public function saveFromFile(File $file, Clippable $clippable = null) {
 
-
 		//Determine if there are any registered processors which know of this file type
+		//Consume any of its processes prior to continuing, allow developer intervention
+		//in processor, in case they deem it necessary to abort.
 
-		if(!array_key_exists($file->getMimeType(), MimeResolver::getTypes()))
-			throw new Exception(sprintf('File type %s not supported', $file->getMimeType()));
+		$continueProcess = $this->processManager->dispatch($file, 'pre'.__FUNCTION__);
+
+		if(!$continueProcess) return null; //Bail if for whatever reason one of the processors returns false
 
 		$newFile = $this->createFileRecord($file);
 
-		// Believe it or not, imageables are optional!
+		// Clippables are optional
 		if($clippable)
 			$clippable->phperclip_files()->save($newFile);
 
@@ -186,7 +196,7 @@ class Service {
 
 		$this->getDriver()->delete($fileModel);
 
-		$image->delete();
+		$fileModel->delete();
 
 	}
 
@@ -323,10 +333,10 @@ class Service {
 	 * @param array $filters
 	 * @throws \Exception
 	 */
-	protected function saveFile(File $file, Image $image, array $filters = []) {
+	protected function saveFile(File $file, FileModel $fileModel) {
 
 
-		$this->getDriver()->saveFile($file, $image, $filters);
+		$this->getDriver()->saveFile($file, $fileModel);
 	}
 
 }

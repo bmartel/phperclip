@@ -582,4 +582,11 @@ class MimeResolver {
 
 		return !$extension ? null : $extension;
 	}
+
+	public function canResolve($mimetype) {
+
+		$mimetype = is_array($mimetype) ? $mimetype: func_get_args();
+
+		return count(array_intersect_key(array_flip($mimetype), array_flip($this->mimeTypes))) === count($mimetype);
+	}
 }
