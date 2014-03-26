@@ -1,27 +1,31 @@
-<?php namespace TippingCanoe\Imager\Model;
+<?php
+/**
+ * Created by PhpStorm.
+ * User: admin
+ * Date: 2014-03-25
+ * Time: 10:59 AM
+ */
 
-use Illuminate\Database\Eloquent\Builder;
+namespace TippingCanoe\Phperclip\Model;
+
+
 use Illuminate\Database\Eloquent\Model;
 
+class File extends Model{
 
-class Image extends Model {
+	protected $table = 'phperclip_file';
 
-	protected $table = 'imager_image';
-
-    	protected $fillable = [
-		'imageable_id', 
-		'imageable_type',
+	protected $fillable = [
+		'clippable_id',
+		'clippable_type',
 		'slot',
-		'width',
-		'height',
-		'average_color',
 		'mime_type'
 	];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
-	public function imageable() {
+	public function clippable() {
 		return $this->morphTo();
 	}
 
@@ -31,11 +35,11 @@ class Image extends Model {
 	 * @param int $id
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
-	public function scopeForImageable(Builder $query, $type, $id) {
+	public function scopeForClippable(Builder $query, $type, $id) {
 		return $query
-			->where('imageable_type', $type)
-			->where('imageable_id', $id)
-		;
+			->where('clippable_type', $type)
+			->where('clippable_id', $id)
+			;
 	}
 
 	/**
@@ -65,20 +69,20 @@ class Image extends Model {
 	}
 
 	/**
-	 * Modifies the query to only include images without imageables.
+	 * Modifies the query to only include files without clippables.
 	 *
 	 * @param Builder $query
 	 * @return Builder
 	 */
 	public function scopeUnattached(Builder $query) {
 		return $query
-			->whereNull('imageable_id')
-			->whereNull('imageable_type')
-		;
+			->whereNull('clippable_id')
+			->whereNull('clippable_type')
+			;
 	}
 
 	/**
-	 * Modifies the query to only include images attached to an imageable.
+	 * Modifies the query to only include files attached to an clippable.
 	 *
 	 * @param Builder $query
 	 * @return Builder
@@ -87,15 +91,7 @@ class Image extends Model {
 		return $query
 			->whereNotNull('imageable_id')
 			->whereNotNull('imageable_type')
-		;
-	}
-
-	/**
-	 * @param Builder $query
-	 * @return Builder
-	 */
-	public function scopeHighestRes(Builder $query) {
-		return $query->orderByRaw('width * height', 'DESC');
+			;
 	}
 
 	/**
@@ -107,7 +103,7 @@ class Image extends Model {
 	}
 
 	/**
-	 * Only retrieve images whose slots are integers.
+	 * Only retrieve files whose slots are integers.
 	 *
 	 * @param Builder $query
 	 * @return Builder
@@ -116,24 +112,4 @@ class Image extends Model {
 		return $query->whereRaw(sprintf('%s.slot REGEXP \'^[[:digit:]]+$\'', $query->getQuery()->from));
 	}
 
-	public function scopeInNamedSlot() {
-		/* ToDo: Implement */
-	}
-
-	public function scopeOnlyPortrait() {
-		/* ToDo: Implement */
-	}
-
-	public function scopeOnlyLandscape() {
-		/* ToDo: Implement */
-	}
-
-	public function scopeWithMinimumWidth() {
-		/* ToDo: Implement */
-	}
-
-	public function scopeWithMinimumHeight() {
-		/* ToDo: Implement */
-	}
-
-}
+} 

@@ -1,28 +1,28 @@
 {
-	"name": "tippingcanoe/imager",
-	"description": "Image attachment and management for your Eloquent models!",
+	"name": "tippingcanoe/phperclip",
+	"description": "File attachment and management for your Eloquent models!",
 	"authors": [
 		{
-			"name": "Alexander Trauzzi",
-			"email": "a.trauzzi@tippingcanoe.com"
+			"name": "Brandon Martel",
+			"email": "b.martel@tippingcanoe.com"
 		}
 	],
 	"license": "MIT",
 	"require": {
 		"php": ">=5.4.0",
-		"illuminate/foundation": "4.*",
-		"illuminate/support": "4.*",
-		"illuminate/database": "4.*",
-		"intervention/image": "1.*",
-		"stojg/crop": "1.*",
-    "aws/aws-sdk-php": "2.5.2"
+		"aws/aws-sdk-php": "2.5.2",
+		"illuminate/foundation": "4.0.*@dev"
+	},
+	"require-dev" : {
+		"phpspec/phpspec": "2.0.*@dev",
+		"mockery/mockery": "0.9.*@dev"
 	},
 	"autoload": {
 		"classmap": [
 			"src/migrations"
 		],
 		"psr-0": {
-			"TippingCanoe\\Imager": "src/"
+			"TippingCanoe\\Phperclip": "src/"
 		}
 	},
 	"minimum-stability": "dev"

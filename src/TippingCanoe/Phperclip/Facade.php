@@ -1,4 +1,6 @@
-<?php namespace TippingCanoe\Imager;
+<?php
+
+namespace TippingCanoe\Phperclip;
 
 use Illuminate\Support\Facades\Facade as Base;
 
@@ -11,7 +13,7 @@ class Facade extends Base {
 	 * @return string
 	 */
 	protected static function getFacadeAccessor() {
-		return 'TippingCanoe\Imager\Service';
+		return 'TippingCanoe\Phperclip\Service';
 	}
 
 }

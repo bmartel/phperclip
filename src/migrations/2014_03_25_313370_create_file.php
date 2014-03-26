@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 
-class CreateImage extends Migration {
+class CreateFile extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -13,7 +13,7 @@ class CreateImage extends Migration {
 	 */
 	public function up() {
 
-		Schema::create('imager_image', function (Blueprint $table) {
+		Schema::create('phperclip_file', function (Blueprint $table) {
 
 			$table
 				->increments('id')
@@ -21,12 +21,12 @@ class CreateImage extends Migration {
 			;
 
 			$table
-				->integer('imageable_id')
+				->integer('clippable_id')
 				->unsigned()
 				->nullable()
 			;
 			$table
-				->string('imageable_type')
+				->string('clippable_type')
 				->nullable()
 			;
 
@@ -35,19 +35,7 @@ class CreateImage extends Migration {
 				->nullable()
 			;
 
-			$table
-				->integer('width')
-				->unsigned()
-			;
-
-			$table
-				->integer('height')
-				->unsigned()
-			;
-
 			$table->string('mime_type');
-
-			$table->string('average_color', 6);
 
 			$table->timestamps();
 
@@ -55,7 +43,7 @@ class CreateImage extends Migration {
 			// Indexes
 			//
 
-			$table->unique(['imageable_id', 'imageable_type', 'slot'], 'U_imageable_slot');
+			$table->unique(['clippable_id', 'clippable_type', 'slot'], 'U_clippable_slot');
 
 		});
 
@@ -67,7 +55,7 @@ class CreateImage extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		Schema::drop('imager_image');
+		Schema::drop('phperclip_file');
 	}
 
 }
