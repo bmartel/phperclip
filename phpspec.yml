@@ -1,0 +1,6 @@
+suites:
+   phperclip_suite:
+      namespace: TippingCanoe\Phperclip
+      spec_prefix: phperclip_spec
+      src_path: ./src
+      spec_path: ./tests

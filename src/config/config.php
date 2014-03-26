@@ -1,26 +1,33 @@
 <?php return [
 
-	// Multiple storage options.
-	'storage' => [
+	// Register File Processors
+	'process' => [
+		'TippingCanoe/Phperclip/Processes/ImageProcessor',
+		'TippingCanoe/Phperclip/Processes/PDFProcessor',
+	],
 
-		'TippingCanoe\Imager\Storage\Filesystem' => [
 
-			// Directory that Imager can manage everything under.
-			'root' => public_path() . '/imager',
+	//	// Multiple storage options.
+	//	'storage' => [
+	//
+	//		'TippingCanoe\Phperclip\Storage\Filesystem' => [
+	//
+	//			// Directory that Phperclip can manage everything under.
+	//			'root' => public_path() . '/phperclip_files',
+	//
+	//			// Public, client-accessible prefix pointing to wherever the root is hosted, including scheme.
+	//			'public_prefix' => sprintf('%s/phperclip_files', Request::getSchemeAndHttpHost()),
+	//
+	//        ],
 
-			// Public, client-accessible prefix pointing to wherever the root is hosted, including scheme.
-			'public_prefix' => sprintf('%s/imager', Request::getSchemeAndHttpHost()),
+	// Amazon S3 Storage Driver
+	/*
+	'TippingCanoe\Imager\Storage\S3' => [
+		'bucket' => 'imager'
+	],
+	*/
 
-        ],
-
-		// Amazon S3 Storage Driver
-		/*
-		'TippingCanoe\Imager\Storage\S3' => [
-			'bucket' => 'imager'
-		],
-		*/
-
-    ],
+	//    ],
 
 	//
 	// Amazon S3 Client
