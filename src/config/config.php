@@ -1,7 +1,7 @@
 <?php return [
 
 	// Register File Processors
-	'process' => [
+	'processors' => [
 		'TippingCanoe/Phperclip/Processes/ImageProcessor',
 		'TippingCanoe/Phperclip/Processes/PDFProcessor',
 	],
