@@ -10,6 +10,7 @@ namespace TippingCanoe\Phperclip\Model;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 
 class File extends Model{
 

@@ -3,9 +3,8 @@
 	// Register File Processors
 	'processors' => [
 		'TippingCanoe/Phperclip/Processes/ImageProcessor',
-		'TippingCanoe/Phperclip/Processes/PDFProcessor',
+		'TippingCanoe/Phperclip/Processes/PdfProcessor',
 	],
-
 
 	// Multiple storage options.
 	'storage' => [

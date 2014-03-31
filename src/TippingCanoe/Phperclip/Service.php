@@ -2,7 +2,6 @@
 
 namespace TippingCanoe\Phperclip;
 
-use Illuminate\Foundation\Application;
 use TippingCanoe\Phperclip\Model\File as FileModel;
 use TippingCanoe\Phperclip\Model\Clippable;
 use TippingCanoe\Phperclip\Processes\ProcessManager;
@@ -32,26 +31,18 @@ class Service {
 	protected $processManager;
 
 	/**
-	 * @var \Illuminate\Foundation\Application
-	 */
-	protected $app;
-
-	/**
 	 * @param FileRepository $fileRepository
-	 * @param Application $app
 	 * @param \TippingCanoe\Phperclip\Storage\Driver[] $storageDrivers
 	 * @throws \Exception
 	 */
 	public function __construct(
 		FileRepository $fileRepository,
 		ProcessManager $processManager,
-		Application $app,
 		array $storageDrivers
 	) {
 
 		$this->fileRepository = $fileRepository;
 		$this->processManager = $processManager;
-		$this->app = $app;
 
 		if (empty($storageDrivers)) {
 			throw new \Exception('You must configure at least one file storage driver for Phperclip to use.');

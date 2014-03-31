@@ -11,7 +11,10 @@
 	"require": {
 		"php": ">=5.4.0",
 		"aws/aws-sdk-php": "2.5.2",
-		"illuminate/foundation": "4.0.*@dev"
+		"illuminate/container": "dev-master",
+		"illuminate/database": "dev-master",
+		"illuminate/config": "dev-master",
+		"illuminate/exception": "dev-master"
 	},
 	"require-dev" : {
 		"phpspec/phpspec": "2.0.*@dev",

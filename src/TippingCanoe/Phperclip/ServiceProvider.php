@@ -3,7 +3,6 @@
 namespace TippingCanoe\Phperclip;
 
 
-use Illuminate\Foundation\Application;
 use TippingCanoe\Phperclip\Processes\ProcessManager;
 use TippingCanoe\Phperclip\Service as PhperclipService;
 
