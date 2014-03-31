@@ -16,27 +16,27 @@ interface FileProcessorInterface {
 	public function registeredMimes();
 
 	/**
-	 * A method to hook into the file save process. Allows intervention of the save by returning false from
+	 * A method to hook into the file save process. Allows intervention of the save operation by returning false from
 	 * this method.
 	 *
 	 * @return bool
 	 */
-	public function onSave();
+	public function onSave(File &$file);
 
 	/**
-	 * A method to hook into the file delete process. Allows intervention of the save by returning false from
+	 * A method to hook into the file delete process. Allows intervention of the delete operation by returning false from
 	 * this method.
 	 *
 	 * @return bool
 	 */
-	public function onDelete();
+	public function onDelete(\TippingCanoe\Phperclip\Model\File &$fileModel);
 
 	/**
-	 * A method to hook into the file move process. Allows intervention of the save by returning false from
+	 * A method to hook into the file move process. Allows intervention of the move operation by returning false from
 	 * this method.
 	 *
 	 * @return bool
 	 */
-	public function onMove();
+	public function onMove(\TippingCanoe\Phperclip\Model\File &$fileModel);
 
 }
