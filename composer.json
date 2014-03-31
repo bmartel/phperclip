@@ -1,6 +1,8 @@
 {
 	"name": "tippingcanoe/phperclip",
-	"description": "File attachment and management for your Eloquent models!",
+	"description": "File attachment and management for Eloquent models",
+	"keywords": ["file","model","eloquent"],
+	"homepage": "https://github.com/bmartel/phperclip",
 	"authors": [
 		{
 			"name": "Brandon Martel",
