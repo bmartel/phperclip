@@ -89,8 +89,8 @@ class File extends Model{
 	 */
 	public function scopeAttached(Builder $query) {
 		return $query
-			->whereNotNull('imageable_id')
-			->whereNotNull('imageable_type')
+			->whereNotNull('clippable_id')
+			->whereNotNull('clippable_type')
 			;
 	}
 

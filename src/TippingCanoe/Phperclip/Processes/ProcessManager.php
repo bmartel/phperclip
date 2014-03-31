@@ -4,11 +4,12 @@ namespace TippingCanoe\Phperclip\Processes;
 
 
 use Symfony\Component\HttpFoundation\File\File;
+use TippingCanoe\Phperclip\Model\File as FileModel;
 
 class ProcessManager {
 
 	/**
-	 * @var \TippingCanoe\Phperclip\Processes\Processor[]
+	 * @var \TippingCanoe\Phperclip\Processes\FileProcessor[]
 	 */
 	protected $processors;
 
@@ -19,25 +20,30 @@ class ProcessManager {
 	}
 
 	/**
-	 * Dispatches the correct processors for the incoming mimetype
+	 * Dispatches the correct processors for the requesting mimetype
 	 *
 	 * @param $mimeType
-	 * @return \TippingCanoe\Phperclip\Processes\Processor[]
+	 * @return \TippingCanoe\Phperclip\Processes\FileProcessor[]
 	 */
-	public function dispatch(File &$file, $action = null) {
+	public function dispatch(&$file, $action) {
 
 		$result = true;
 
 		foreach ($this->processors as $processor) {
 
-			if ($this->hasProcessFor($file->getMimeType(), $processor)) {
+			$mimeType =
+				($file instanceof File) ? $file->getMimeType() :
+					($file instanceof FileModel) ? $file->mime_type : null;
 
-				// Allow additional pre/post methods to be called
+			if (!$mimeType) {
+				return false;
+			} // If the file passed in is not one of the expected types, bail.
+
+			if ($this->hasProcessFor($mimeType, $processor->registeredMimes())) {
+
+				// Call the processor method
 				if (method_exists($processor, $action)) {
-					$result &= call_user_func($processor->$action, $file);
-				} else {
-					// Call main process method
-					$result &= $processor->process($file);
+					$result &= call_user_func([$processor, $action], $file);
 				}
 
 				if (!$result) {
@@ -51,7 +57,7 @@ class ProcessManager {
 	}
 
 	/**
-	 * Check if there are processors available for the mimetypes incoming.
+	 * Check if there are processors available for the mimetypes request.
 	 *
 	 * @param $mimeType
 	 * @return bool

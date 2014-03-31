@@ -5,6 +5,7 @@ namespace TippingCanoe\Phperclip;
 
 use Illuminate\Foundation\Application;
 use TippingCanoe\Phperclip\Processes\ProcessManager;
+use TippingCanoe\Phperclip\Service as PhperclipService;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider{
 
@@ -43,7 +44,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider{
 
 
 
-		$this->app->singleton('TippingCanoe\Imager\Service', function (Application $app) use ($config) {
+		$this->app->singleton('TippingCanoe\Phperclip\Service', function (Application $app) use ($config) {
 
 			//
 			// Amazon S3
@@ -78,19 +79,16 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider{
 					$processors[] = $app->make($processor);
 				}
 
-				$this->app->bind('ProcessManager', new ProcessManager($processors));
+				$this->app->bind('TippingCanoe\Phperclip\Processes\ProcessManager', new ProcessManager($processors));
 			}
 
 
-			$service = new Service(
+			return new PhperclipService(
 				$app->make('TippingCanoe\Phperclip\Model\File'),
-				new MimeResolver(),
-				$app->make('ProcessManager'),
+				$app->make('TippingCanoe\Phperclip\Processes\ProcessManager'),
 				$app,
 				$storageDrivers
 			);
-
-			return $service;
 
 		});
 

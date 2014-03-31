@@ -583,6 +583,12 @@ class MimeResolver {
 		return !$extension ? null : $extension;
 	}
 
+	/**
+	 * Determine if the given mimetype can be resolved by the registered types.
+	 *
+	 * @param $mimetype
+	 * @return bool
+	 */
 	public function canResolve($mimetype) {
 
 		$mimetype = is_array($mimetype) ? $mimetype: func_get_args();

@@ -17,11 +17,6 @@ class Service {
 	protected $fileRepository;
 
 	/**
-	 * @var MimeResolver
-	 */
-	protected $mimeResolver;
-
-	/**
 	 * @var \TippingCanoe\Phperclip\Storage\Driver[]
 	 */
 	protected $storageDrivers;
@@ -45,23 +40,22 @@ class Service {
 	 * @param FileRepository $fileRepository
 	 * @param Application $app
 	 * @param \TippingCanoe\Phperclip\Storage\Driver[] $storageDrivers
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	public function __construct(
 		FileRepository $fileRepository,
-		MimeResolver $mimeResolver,
 		ProcessManager $processManager,
 		Application $app,
 		array $storageDrivers
 	) {
 
 		$this->fileRepository = $fileRepository;
-		$this->mimeResolver = $mimeResolver;
 		$this->processManager = $processManager;
 		$this->app = $app;
 
-		if(empty($storageDrivers))
-			throw new Exception('You must configure at least one file storage driver for Phperclip to use.');
+		if (empty($storageDrivers)) {
+			throw new \Exception('You must configure at least one file storage driver for Phperclip to use.');
+		}
 
 		$this->storageDrivers = $storageDrivers;
 		$this->currentDriver = current($storageDrivers);
@@ -78,6 +72,7 @@ class Service {
 	 * @param $abstract
 	 */
 	public function useDriver($abstract) {
+
 		$this->currentDriver = $this->storageDrivers[$abstract];
 	}
 
@@ -88,6 +83,7 @@ class Service {
 	 * @return Model\File
 	 */
 	public function getById($id) {
+
 		return $this->fileRepository->getById($id);
 	}
 
@@ -97,6 +93,7 @@ class Service {
 	 * @return Model\File
 	 */
 	public function getBySlot($slot, Clippable $clippable = null) {
+
 		return $this->fileRepository->getBySlot($slot, $clippable);
 	}
 
@@ -106,7 +103,7 @@ class Service {
 	 */
 	public function getPublicUri(FileModel $fileModel) {
 
-		if(!$this->getDriver()->has($fileModel)) {
+		if (!$this->getDriver()->has($fileModel)) {
 			$tempOriginal = $this->getDriver()->tempOriginal($fileModel);
 			$this->saveFile($tempOriginal, $fileModel);
 		}
@@ -116,25 +113,26 @@ class Service {
 	}
 
 	/**
-	 * Returns an image URI based on the id of the original.
+	 * Returns a file URI based on the id of the original.
 	 *
 	 * @param int $id
 	 * @param array $filters
 	 * @return string
 	 */
 	public function getPublicUriById($id) {
+
 		return $this->getPublicUri($this->getById($id));
 	}
 
 	/**
-	 * Returns a File URI based on the slot and clippable.
+	 * Returns a File URI based on the slot and clippable
 	 *
-	 * @param string $slot
-	 * @param Imageable $imageable
-	 * @param array $filters
+	 * @param $slot
+	 * @param Clippable $clippable
 	 * @return string
 	 */
 	public function getPublicUriBySlot($slot, Clippable $clippable = null) {
+
 		return $this->getPublicUri($clippable->phperclip_files()->inSlot($slot));
 	}
 
@@ -143,24 +141,23 @@ class Service {
 	 *
 	 * @param File $file
 	 * @param Clippable $clippable
-	 * @return Image
-	 * @throws Exception
+	 * @return null|FileModel
 	 */
 	public function saveFromFile(File $file, Clippable $clippable = null) {
 
-		//Determine if there are any registered processors which know of this file type
-		//Consume any of its processes prior to continuing, allow developer intervention
-		//in processor, in case they deem it necessary to abort.
+		// Determine if there are any registered processors which know of this file type
+		// and the current action scope.
 
-		$continueProcess = $this->processManager->dispatch($file, 'pre'.__FUNCTION__);
-
-		if(!$continueProcess) return null; //Bail if for whatever reason one of the processors returns false
+		if (!$this->processManager->dispatch($file, 'onSave')) {
+			return null;
+		} //Bail if for whatever reason one of the processors returns false
 
 		$newFile = $this->createFileRecord($file);
 
 		// Clippables are optional
-		if($clippable)
+		if ($clippable) {
 			$clippable->phperclip_files()->save($newFile);
+		}
 
 		$this->saveFile($file, $newFile);
 
@@ -171,9 +168,9 @@ class Service {
 	/**
 	 * Saves a new local file from a file available via any of the standard PHP supported schemes.
 	 *
-	 * @param string $uri
+	 * @param $uri
 	 * @param Clippable $clippable
-	 * @return Image
+	 * @return null|FileModel
 	 */
 	public function saveFromUri($uri, Clippable $clippable = null) {
 
@@ -189,10 +186,18 @@ class Service {
 	}
 
 	/**
+	 * Delete the file
 	 *
 	 * @param FileModel $fileModel
 	 */
 	public function delete(FileModel $fileModel) {
+
+		// Determine if there are any registered processors which know of this file type
+		// and the current action scope.
+
+		if (!$this->processManager->dispatch($fileModel, 'onDelete')) {
+			return null;
+		} //Bail if for whatever reason one of the processors returns false
 
 		$this->getDriver()->delete($fileModel);
 
@@ -205,11 +210,13 @@ class Service {
 	 * @param array $filters
 	 */
 	public function deleteById($id) {
+
 		$this->delete($this->getById($id));
 	}
 
-	public function deleteBySlot($slot, Imageable $imageable = null) {
-		$this->delete($this->getBySlot($slot, $imageable));
+	public function deleteBySlot($slot, Clippable $clippable = null) {
+
+		$this->delete($this->getBySlot($slot, $clippable));
 	}
 
 	//
@@ -217,33 +224,32 @@ class Service {
 	//
 
 	/**
+	 * Perform batch operations on files.
+	 *
 	 * @param array $operations
-	 * @param \Symfony\Component\HttpFoundation\File\File[] $files
-	 * @param Imageable $imageable
+	 * @param array $files
+	 * @param Clippable $clippable
 	 */
-	public function batch(array $operations, array $files = null, Imageable $imageable = null) {
+	public function batch(array $operations, array $files = null, Clippable $clippable = null) {
 
-		// Perform any operations first so that images can move out of the way for new ones.
-		foreach($operations as $slot => $operation) {
+		// Perform any operations first so that files can move out of the way for new ones.
+		foreach ($operations as $slot => $operation) {
 
 			// Do deletes first.
-			if(empty($operation))
-				$this->deleteBySlot($slot, $imageable);
-
-			// Then move/swaps.
-			elseif(is_int($operation))
+			if (empty($operation)) {
+				$this->deleteBySlot($slot, $clippable);
+			} // Then move/swaps.
+			elseif (is_int($operation)) {
 				$this->moveToSlot($this->getById($operation), $slot);
-
-			// Then remote images.
-			elseif(filter_input($operation, FILTER_VALIDATE_URL)) {
+			} // Then remote files.
+			elseif (filter_input($operation, FILTER_VALIDATE_URL)) {
 
 				try {
-					$this->saveFromUri($operation, $imageable, ['slot' => $slot]);
-				}
-				catch(Exception $ex) {
+					$this->saveFromUri($operation, $clippable, ['slot' => $slot]);
+				} catch (\Exception $ex) {
 					// Displace whatever is in the slot.
 					$this->moveToSlot($this->getBySlot($slot), null);
-					$this->saveFromUri($operation, $imageable, ['slot' => $slot]);
+					$this->saveFromUri($operation, $clippable, ['slot' => $slot]);
 				}
 
 			}
@@ -251,42 +257,54 @@ class Service {
 		}
 
 		// Handle file uploads.
-		foreach($files as $file) {
+		foreach ($files as $file) {
 			try {
-				$this->saveFromFile($file, $imageable, ['slot' => $slot]);
-			}
-			catch(Exception $ex) {
+				$this->saveFromFile($file, $clippable, ['slot' => $slot]);
+			} catch (\Exception $ex) {
 				// Displace whatever is in the slot.
 				$this->moveToSlot($this->getBySlot($slot), null);
-				$this->saveFromFile($file, $imageable, ['slot' => $slot]);
+				$this->saveFromFile($file, $clippable, ['slot' => $slot]);
 			}
 		}
 
 	}
 
-	public function moveToSlot(Image $image, $slot) {
+	/**
+	 * Move a file from one logical slot to another.
+	 *
+	 * @param FileModel $fileModel
+	 * @param $slot
+	 * @return null
+	 */
+	public function moveToSlot(FileModel $fileModel, $slot) {
+
+		// Determine if there are any registered processors which know of this file type
+		// and the current action scope.
+
+		if (!$this->processManager->dispatch($fileModel, 'onMove')) {
+			return null;
+		} //Bail if for whatever reason one of the processors returns false
 
 		try {
-			// Assign the new slot to our image.
-			$image->slot = $slot;
-			$image->save();
-		}
-			// Something is already in our slot.
-		catch(Exception $ex) {
+			// Assign the new slot to our file.
+			$fileModel->slot = $slot;
+			$fileModel->save();
+		} // Something is already in our slot.
+		catch (\Exception $ex) {
 
-			// Move the previous image out temporarily, we'll perform a swap.
-			$previousSlotImage = $this->getBySlot($slot, $image->imageble);
+			// Move the previous file out temporarily, we'll perform a swap.
+			$previousSlotImage = $this->getBySlot($slot, $fileModel->clippable);
 			$previousSlotImage->slot = null;
 			$previousSlotImage->save();
 
-			// Save the slot our image is in.
-			$previousSlot = $image->slot;
+			// Save the slot our file is in.
+			$previousSlot = $fileModel->slot;
 			// NOW save!
-			$image->slot = $slot;
-			$image->save();
+			$fileModel->slot = $slot;
+			$fileModel->save();
 
 			// If our file had a non-null slot, move the previous occupant of the target slot into it.
-			if($previousSlot !== null) {
+			if ($previousSlot !== null) {
 				$previousSlotImage->slot = $previousSlot;
 				$previousSlotImage->save;
 			}
@@ -306,6 +324,7 @@ class Service {
 	 * @return \TippingCanoe\Phperclip\Storage\Driver
 	 */
 	protected function getDriver($abstract = null) {
+
 		return $abstract ? $this->storageDrivers[$abstract] : $this->currentDriver;
 	}
 
@@ -329,9 +348,7 @@ class Service {
 	 * Pass a file save into the current Driver.
 	 *
 	 * @param File $file
-	 * @param Model\Image $image
-	 * @param array $filters
-	 * @throws \Exception
+	 * @param FileModel $fileModel
 	 */
 	protected function saveFile(File $file, FileModel $fileModel) {
 

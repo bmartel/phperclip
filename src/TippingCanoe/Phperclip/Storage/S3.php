@@ -28,11 +28,20 @@ class S3 implements Driver {
 	protected $awsBucket;
 
 	/**
+	 * @var \TippingCanoe\Phperclip\MimeResolver
+	 */
+	protected $mimeResolver;
+
+	/**
 	 * @param S3Client $s3Client
 	 */
-	public function __construct(S3Client $s3Client) {
+	public function __construct(
+		S3Client $s3Client,
+		MimeResolver $mimeResolver
+	) {
 
 		$this->s3 = $s3Client;
+		$this->mimeResolver = $mimeResolver;
 	}
 
 	/**
@@ -125,7 +134,7 @@ class S3 implements Driver {
 		$originalPath = sprintf('%s-%s.%s',
 			$fileModel->getKey(),
 			$this->generateHash($fileModel),
-			MimeResolver::getExtensionForMimeType($fileModel->mime_type)
+			$this->mimeResolver->getExtension($fileModel->mime_type)
 		);
 
 		// Download file
@@ -153,7 +162,7 @@ class S3 implements Driver {
 		return sprintf('%s-%s.%s',
 			$fileModel->getKey(),
 			$this->generateHash($fileModel, $filters),
-			MimeResolver::getExtensionForMimeType($fileModel->mime_type)
+			$this->mimeResolver->getExtension($fileModel->mime_type)
 		);
 
 	}
@@ -165,15 +174,11 @@ class S3 implements Driver {
 	 * @param array $filters
 	 * @return string
 	 */
-	protected function generateHash(FileModel $fileModel, array $filters = []) {
+	protected function generateHash(FileModel $fileModel) {
 
 		$state = [
-			'id' => (string) $fileModel->getKey(),
-			'filters' => $filters
+			'id' => (string) $fileModel->getKey()
 		];
-
-		// Must be recursively sorted otherwise arrays with similar keys in different orders won't have the same hash!
-		$state = $this->recursiveKeySort($state);
 
 		return md5(json_encode($state));
 
