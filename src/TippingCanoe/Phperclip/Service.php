@@ -248,7 +248,7 @@ class Service {
 		}
 
 		// Handle file uploads.
-		foreach ($files as $file) {
+		foreach ($files as $slot => $file) {
 			try {
 				$this->saveFromFile($file, $clippable, ['slot' => $slot]);
 			} catch (\Exception $ex) {
@@ -329,7 +329,9 @@ class Service {
 
 		// Obtain file metadata and save the record to the database.
 
-		$attributes = [];
+		$attributes = [
+			'mime_type' => $file->getMimeType()
+		];
 
 		return $this->fileRepository->create($attributes);
 
