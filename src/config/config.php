@@ -2,8 +2,11 @@
 
 	// Register File Processors
 	'processors' => [
-		'TippingCanoe/Phperclip/Processes/ImageProcessor',
-		'TippingCanoe/Phperclip/Processes/PdfProcessor',
+
+		//      Implement your own file specific processing by adding a processor here.
+		//
+		//		'TippingCanoe/Phperclip/Processes/ImageProcessor',
+		//		'TippingCanoe/Phperclip/Processes/PdfProcessor',
 	],
 
 	// Multiple storage options.

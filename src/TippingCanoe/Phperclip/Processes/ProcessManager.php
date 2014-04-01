@@ -11,7 +11,7 @@ class ProcessManager {
 	protected $processors;
 
 
-	public function __construct(array $processors) {
+	public function __construct(array $processors = null) {
 
 		$this->processors = $processors;
 	}
@@ -26,28 +26,29 @@ class ProcessManager {
 
 		$result = true;
 
-		foreach ($this->processors as $processor) {
+		if(empty($this->processors) === false) {
+			foreach ($this->processors as $processor) {
 
-			$mimeType =
-				($file instanceof File) ? $file->getMimeType() :
-					($file instanceof FileModel) ? $file->mime_type : null;
+				$mimeType =
+					($file instanceof File) ? $file->getMimeType() :
+						($file instanceof FileModel) ? $file->mime_type : null;
 
-			if (!$mimeType) {
-				return false;
-			} // If the file passed in is not one of the expected types, bail.
+				if (!$mimeType) {
+					return false;
+				} // If the file passed in is not one of the expected types, bail.
 
-			if ($this->hasProcessFor($mimeType, $processor->registeredMimes())) {
+				if ($this->hasProcessFor($mimeType, $processor->registeredMimes())) {
 
-				// Call the processor method
-				if (method_exists($processor, $action)) {
-					$result &= call_user_func([$processor, $action], $file);
-				}
+					// Call the processor method
+					if (method_exists($processor, $action)) {
+						$result &= call_user_func([$processor, $action], $file);
+					}
 
-				if (!$result) {
-					return $result;
+					if (!$result) {
+						return $result;
+					}
 				}
 			}
-
 		}
 
 		return $result;
@@ -65,4 +66,4 @@ class ProcessManager {
 
 		return count(array_intersect_key(array_flip($mimeType), $processor)) === count($mimeType);
 	}
-} 
+}

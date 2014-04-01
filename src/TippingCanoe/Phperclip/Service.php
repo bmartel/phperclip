@@ -282,9 +282,9 @@ class Service {
 		catch (\Exception $ex) {
 
 			// Move the previous file out temporarily, we'll perform a swap.
-			$previousSlotImage = $this->getBySlot($slot, $fileModel->clippable);
-			$previousSlotImage->slot = null;
-			$previousSlotImage->save();
+			$previousSlotFile = $this->getBySlot($slot, $fileModel->clippable);
+			$previousSlotFile->slot = null;
+			$previousSlotFile->save();
 
 			// Save the slot our file is in.
 			$previousSlot = $fileModel->slot;
@@ -294,8 +294,8 @@ class Service {
 
 			// If our file had a non-null slot, move the previous occupant of the target slot into it.
 			if ($previousSlot !== null) {
-				$previousSlotImage->slot = $previousSlot;
-				$previousSlotImage->save;
+				$previousSlotFile->slot = $previousSlot;
+				$previousSlotFile->save;
 			}
 
 		}
