@@ -1,7 +1,4 @@
-<?php
-
-namespace TippingCanoe\Phperclip\Processes;
-
+<?php namespace TippingCanoe\Phperclip\Processes;
 
 use Symfony\Component\HttpFoundation\File\File;
 use TippingCanoe\Phperclip\Model\File as FileModel;

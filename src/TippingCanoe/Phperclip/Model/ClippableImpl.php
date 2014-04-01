@@ -1,8 +1,4 @@
-<?php
-
-
-namespace TippingCanoe\Phperclip\Model;
-
+<?php namespace TippingCanoe\Phperclip\Model;
 
 trait ClippableImpl {
 

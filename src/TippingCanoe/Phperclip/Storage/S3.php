@@ -1,12 +1,4 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: admin
- * Date: 2014-03-26
- * Time: 10:32 AM
- */
-
-namespace TippingCanoe\Phperclip\Storage;
+<?php namespace TippingCanoe\Phperclip\Storage;
 
 use Symfony\Component\HttpFoundation\File\File;
 use TippingCanoe\Phperclip\Model\File as FileModel;

@@ -1,6 +1,4 @@
-<?php
-
-namespace TippingCanoe\Phperclip;
+<?php namespace TippingCanoe\Phperclip;
 
 use TippingCanoe\Phperclip\Model\File as FileModel;
 use TippingCanoe\Phperclip\Model\Clippable;

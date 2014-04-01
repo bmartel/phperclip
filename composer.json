@@ -1,7 +1,7 @@
 {
 	"name": "tippingcanoe/phperclip",
 	"description": "File attachment and management for Eloquent models",
-	"keywords": ["file","model","eloquent"],
+	"keywords": ["file","model","eloquent","attachment"],
 	"homepage": "https://github.com/bmartel/phperclip",
 	"authors": [
 		{
@@ -13,9 +13,10 @@
 	"require": {
 		"php": ">=5.4.0",
 		"aws/aws-sdk-php": "2.5.2",
-		"illuminate/container": "dev-master",
-		"illuminate/database": "dev-master",
-		"illuminate/config": "dev-master"
+        "symfony/http-foundation": "~2.5",
+        "illuminate/support": "~4.1",
+        "illuminate/database": "~4.1",
+        "illuminate/config": "~4.1"
 	},
 	"require-dev" : {
 		"phpspec/phpspec": "2.0.*@dev",

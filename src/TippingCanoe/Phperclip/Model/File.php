@@ -1,13 +1,4 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: admin
- * Date: 2014-03-25
- * Time: 10:59 AM
- */
-
-namespace TippingCanoe\Phperclip\Model;
-
+<?php namespace TippingCanoe\Phperclip\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;

@@ -1,7 +1,4 @@
-<?php
-
-namespace TippingCanoe\Phperclip\Storage;
-
+<?php namespace TippingCanoe\Phperclip\Storage;
 
 use TippingCanoe\Phperclip\Model\File as FileModel;
 use TippingCanoe\Phperclip\MimeResolver;
