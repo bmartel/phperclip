@@ -5,7 +5,7 @@ use TippingCanoe\Phperclip\Model\Clippable;
 interface FileInterface {
 
 	/**
-	 * Creates a new File object in the database.
+	 * Creates a new file object in the database.
 	 *
 	 * @param $attributes
 	 * @return \TippingCanoe\Phperclip\Model\File
