@@ -13,7 +13,7 @@
 	"require": {
 		"php": ">=5.4.0",
 		"aws/aws-sdk-php": "2.5.2",
-        "symfony/http-foundation": "~2.5",
+        "symfony/http-foundation": "2.4.*@dev",
         "illuminate/support": "~4.1",
         "illuminate/database": "~4.1",
         "illuminate/config": "~4.1"
