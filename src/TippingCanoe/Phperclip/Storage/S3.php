@@ -160,7 +160,7 @@ class S3 implements Driver {
 	}
 
 	/**
-	 * Generates a hash based on an image and it's filters.
+	 * Generates a hash based on a file key.
 	 *
 	 * @param FileModel $fileModel
 	 * @param array $filters

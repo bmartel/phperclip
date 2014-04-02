@@ -60,10 +60,8 @@ class Filesystem implements Driver {
 	 * Saves a File.
 	 *
 	 * Exceptions can provide extended error information and will abort the save process.
-	 *
 	 * @param File $file
-	 * @param File $image
-	 * @param array $filters
+	 * @param FileModel $fileModel
 	 */
 	public function saveFile(File $file, FileModel $fileModel) {
 
@@ -71,9 +69,8 @@ class Filesystem implements Driver {
 	}
 
 	/**
-	 * @param File $image
-	 * @param array $filters
-	 * @return bool|mixed
+	 * @param FileModel $fileModel
+	 * @return bool
 	 */
 	public function has(FileModel $fileModel) {
 
@@ -81,10 +78,9 @@ class Filesystem implements Driver {
 	}
 
 	/**
-	 * Deletes an image.
+	 * Deletes a file.
 	 *
-	 * @param File $image
-	 * @param array $filters
+	 * @param FileModel $fileModel
 	 */
 	public function delete(FileModel $fileModel) {
 
@@ -104,7 +100,7 @@ class Filesystem implements Driver {
 	/**
 	 * Tells the driver to prepare a copy of the original image locally.
 	 *
-	 * @param File $image
+	 * @param FileModel $fileModel
 	 * @return File
 	 */
 	public function tempOriginal(FileModel $fileModel) {
@@ -137,7 +133,7 @@ class Filesystem implements Driver {
 	}
 
 	/**
-	 * Generates a hash based on an image and it's filters.
+	 * Generates a hash based on a file key
 	 *
 	 * @param File $fileModel
 	 * @return string

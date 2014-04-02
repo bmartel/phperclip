@@ -34,7 +34,7 @@
 		//
 		// Amazon S3 Client
 		//
-		// Uncommenting these lines tells Imager to take care
+		// Uncommenting these lines tells Phperclip to take care
 		// of the Amazon S3 binding in the IoC.
 		//
 		// It may be that this binding is accomplished elsewhere in your
