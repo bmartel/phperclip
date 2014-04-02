@@ -48,10 +48,8 @@ class S3 implements Driver {
 	 * Saves a file.
 	 *
 	 * Exceptions can provide extended error information and will abort the save process.
-	 *
 	 * @param File $file
 	 * @param FileModel $fileModel
-	 * @param array $filters
 	 */
 	public function saveFile(File $file, FileModel $fileModel) {
 
@@ -69,7 +67,6 @@ class S3 implements Driver {
 	 * Returns the public URI for a file.
 	 *
 	 * @param FileModel $fileModel
-	 * @param array $filters
 	 * @return string
 	 */
 	public function getPublicUri(FileModel $fileModel) {
@@ -146,14 +143,13 @@ class S3 implements Driver {
 
 	/**
 	 * @param FileModel $fileModel
-	 * @param array $filters
 	 * @return string
 	 */
-	protected function generateFileName(FileModel $fileModel, array $filters = []) {
+	protected function generateFileName(FileModel $fileModel) {
 
 		return sprintf('%s-%s.%s',
 			$fileModel->getKey(),
-			$this->generateHash($fileModel, $filters),
+			$this->generateHash($fileModel),
 			$this->mimeResolver->getExtension($fileModel->mime_type)
 		);
 
@@ -163,7 +159,6 @@ class S3 implements Driver {
 	 * Generates a hash based on a file key.
 	 *
 	 * @param FileModel $fileModel
-	 * @param array $filters
 	 * @return string
 	 */
 	protected function generateHash(FileModel $fileModel) {
