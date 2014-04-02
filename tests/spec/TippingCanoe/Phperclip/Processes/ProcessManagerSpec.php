@@ -6,7 +6,6 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\HttpFoundation\File\File;
 use TippingCanoe\Phperclip\Processes\FileProcessor;
-use Mockery;
 
 class ProcessManagerSpec extends ObjectBehavior
 {
@@ -17,11 +16,6 @@ class ProcessManagerSpec extends ObjectBehavior
 		$processors[]= new MockProcessor();
 
 		$this->beConstructedWith($processors);
-	}
-
-	public function letGo()
-	{
-		Mockery::close();
 	}
 
     function it_is_initializable()
