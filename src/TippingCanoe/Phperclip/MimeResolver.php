@@ -8,6 +8,7 @@ class MimeResolver {
 	 * @var array
 	 */
 	protected $mainMimeTypes = array(
+		'txt'       => 'text/plain',
 		'css'       => 'text/css',
 		'js'        => 'application/javascript',
 	);

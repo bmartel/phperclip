@@ -22,6 +22,15 @@ class File extends Model{
 	}
 
 	/**
+	 * Get the mimetype of the File
+	 *
+	 * @return mixed
+	 */
+	public function getMimeType(){
+		return $this->mime_type;
+	}
+
+	/**
 	 * @param \Illuminate\Database\Eloquent\Builder $query
 	 * @param string $type
 	 * @param int $id

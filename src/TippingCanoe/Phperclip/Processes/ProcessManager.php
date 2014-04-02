@@ -22,16 +22,18 @@ class ProcessManager {
 	 * @param $mimeType
 	 * @return \TippingCanoe\Phperclip\Processes\FileProcessor[]
 	 */
-	public function dispatch(&$file, $action) {
+	public function dispatch($file, $action) {
 
 		$result = true;
 
-		if(empty($this->processors) === false) {
+		if (empty($this->processors) === false) {
 			foreach ($this->processors as $processor) {
 
-				$mimeType =
-					($file instanceof File) ? $file->getMimeType() :
-						($file instanceof FileModel) ? $file->mime_type : null;
+				$mimeType = null;
+
+				if ($file instanceof File || $file instanceof FileModel) {
+					$mimeType = $file->getMimeType();
+				}
 
 				if (!$mimeType) {
 					return false;
@@ -41,17 +43,17 @@ class ProcessManager {
 
 					// Call the processor method
 					if (method_exists($processor, $action)) {
-						$result &= call_user_func([$processor, $action], $file);
+						$result &= $processor->$action($file);
 					}
 
 					if (!$result) {
-						return $result;
+						return (bool) $result;
 					}
 				}
 			}
 		}
 
-		return $result;
+		return (bool) $result;
 	}
 
 	/**
@@ -60,10 +62,8 @@ class ProcessManager {
 	 * @param $mimeType
 	 * @return bool
 	 */
-	protected function hasProcessFor($mimeType, $processor) {
+	protected function hasProcessFor($mimeType, $processorMimes) {
 
-		$mimeType = is_array($mimeType) ? $mimeType : func_get_args();
-
-		return count(array_intersect_key(array_flip($mimeType), $processor)) === count($mimeType);
+		return in_array($mimeType, $processorMimes);
 	}
 }
