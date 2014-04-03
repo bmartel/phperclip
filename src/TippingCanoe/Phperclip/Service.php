@@ -102,13 +102,42 @@ class Service {
 	}
 
 	/**
+	 * Get the files attached to a model
+	 *
+	 * @param Clippable $clippable
+	 * @param null $mimeTypes
+	 * @return \Illuminate\Database\Eloquent\Collection
+	 */
+	public function getFilesFor(Clippable $clippable, $mimeTypes = null) {
+
+		$query = $clippable->phperclip_files();
+
+		if ($mimeTypes) {
+
+			$mimeTypes = is_array($mimeTypes) ? $mimeTypes : [$mimeTypes];
+
+			$query->where(function ($q) use ($mimeTypes) {
+
+				foreach ($mimeTypes as $mimeType) {
+					$q->orWhere('mime_type', $mimeType);
+				}
+			});
+
+		}
+
+		return $query->get();
+	}
+
+
+	/**
 	 * Returns a file URI based on the id of the original.
 	 *
 	 * @param int $id
 	 * @param array $filters
 	 * @return string
 	 */
-	public function getPublicUriById($id) {
+	public
+	function getPublicUriById($id) {
 
 		return $this->getPublicUri($this->getById($id));
 	}
@@ -120,7 +149,8 @@ class Service {
 	 * @param Clippable $clippable
 	 * @return string
 	 */
-	public function getPublicUriBySlot($slot, Clippable $clippable = null) {
+	public
+	function getPublicUriBySlot($slot, Clippable $clippable = null) {
 
 		return $this->getPublicUri($clippable->phperclip_files()->inSlot($slot));
 	}
@@ -132,7 +162,8 @@ class Service {
 	 * @param Clippable $clippable
 	 * @return null|FileModel
 	 */
-	public function saveFromFile(File $file, Clippable $clippable = null) {
+	public
+	function saveFromFile(File $file, Clippable $clippable = null) {
 
 		// Determine if there are any registered processors which know of this file type
 		// and the current action scope.
@@ -161,7 +192,8 @@ class Service {
 	 * @param Clippable $clippable
 	 * @return null|FileModel
 	 */
-	public function saveFromUri($uri, Clippable $clippable = null) {
+	public
+	function saveFromUri($uri, Clippable $clippable = null) {
 
 		// Download the file.
 		// Use sys_get_temp_dir so that systems-level configs can apply.
@@ -179,7 +211,8 @@ class Service {
 	 *
 	 * @param FileModel $fileModel
 	 */
-	public function delete(FileModel $fileModel) {
+	public
+	function delete(FileModel $fileModel) {
 
 		// Determine if there are any registered processors which know of this file type
 		// and the current action scope.
@@ -198,12 +231,14 @@ class Service {
 	 * @param $id
 	 * @param array $filters
 	 */
-	public function deleteById($id) {
+	public
+	function deleteById($id) {
 
 		$this->delete($this->getById($id));
 	}
 
-	public function deleteBySlot($slot, Clippable $clippable = null) {
+	public
+	function deleteBySlot($slot, Clippable $clippable = null) {
 
 		$this->delete($this->getBySlot($slot, $clippable));
 	}
@@ -219,7 +254,8 @@ class Service {
 	 * @param array $files
 	 * @param Clippable $clippable
 	 */
-	public function batch(array $operations, array $files = null, Clippable $clippable = null) {
+	public
+	function batch(array $operations, array $files = null, Clippable $clippable = null) {
 
 		// Perform any operations first so that files can move out of the way for new ones.
 		foreach ($operations as $slot => $operation) {
@@ -265,7 +301,8 @@ class Service {
 	 * @param $slot
 	 * @return null
 	 */
-	public function moveToSlot(FileModel $fileModel, $slot) {
+	public
+	function moveToSlot(FileModel $fileModel, $slot) {
 
 		// Determine if there are any registered processors which know of this file type
 		// and the current action scope.
@@ -312,7 +349,8 @@ class Service {
 	 * @param null $abstract
 	 * @return \TippingCanoe\Phperclip\Storage\Driver
 	 */
-	protected function getDriver($abstract = null) {
+	protected
+	function getDriver($abstract = null) {
 
 		return $abstract ? $this->storageDrivers[$abstract] : $this->currentDriver;
 	}
@@ -323,7 +361,8 @@ class Service {
 	 * @param File $file
 	 * @return FileModel
 	 */
-	protected function createFileRecord(File $file) {
+	protected
+	function createFileRecord(File $file) {
 
 		// Obtain file metadata and save the record to the database.
 
@@ -341,7 +380,8 @@ class Service {
 	 * @param File $file
 	 * @param FileModel $fileModel
 	 */
-	protected function saveFile(File $file, FileModel $fileModel) {
+	protected
+	function saveFile(File $file, FileModel $fileModel) {
 
 
 		$this->getDriver()->saveFile($file, $fileModel);
