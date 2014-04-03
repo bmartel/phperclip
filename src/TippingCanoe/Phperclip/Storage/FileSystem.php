@@ -87,7 +87,7 @@ class Filesystem implements Driver {
 		$pattern = sprintf('%s/%s-*.%s',
 			$this->root,
 			$fileModel->getKey(),
-			MimeResolver::getExtensionForMimeType($fileModel->mime_type)
+			$this->mimeResolver->getExtension($fileModel->mime_type)
 		);
 
 		foreach (glob($pattern) as $filePath) {
