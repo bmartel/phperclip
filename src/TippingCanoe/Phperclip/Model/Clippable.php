@@ -5,5 +5,5 @@ interface Clippable {
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
 	 */
-	public function phperclip_files();
+	public function clippedFiles();
 } 

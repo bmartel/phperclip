@@ -110,7 +110,7 @@ class Service {
 	 */
 	public function getFilesFor(Clippable $clippable, $mimeTypes = null) {
 
-		$query = $clippable->phperclip_files();
+		$query = $clippable->clippedFiles();
 
 		if ($mimeTypes) {
 
@@ -152,7 +152,7 @@ class Service {
 	public
 	function getPublicUriBySlot($slot, Clippable $clippable = null) {
 
-		return $this->getPublicUri($clippable->phperclip_files()->inSlot($slot));
+		return $this->getPublicUri($clippable->clippedFiles()->inSlot($slot));
 	}
 
 	/**
@@ -176,7 +176,7 @@ class Service {
 
 		// Clippables are optional
 		if ($clippable) {
-			$clippable->phperclip_files()->save($newFile);
+			$clippable->clippedFiles()->save($newFile);
 		}
 
 		$this->saveFile($file, $newFile);

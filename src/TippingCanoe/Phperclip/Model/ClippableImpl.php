@@ -2,7 +2,7 @@
 
 trait ClippableImpl {
 
-	public function phperclip_files() {
+	public function clippedFiles() {
 
 		return $this->morphMany('TippingCanoe\Phperclip\Model\File', 'clippable');
 	}

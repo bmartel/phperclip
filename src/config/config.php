@@ -15,17 +15,17 @@
 		'TippingCanoe\Phperclip\Storage\Filesystem' => [
 
 			// Directory that Phperclip can manage everything under.
-			'root' => public_path() . '/phperclip_files',
+			'root' => public_path() . '/uploaded/files',
 
 			// Public, client-accessible prefix pointing to wherever the root is hosted, including scheme.
-			'public_prefix' => sprintf('%s/phperclip_files', Request::getSchemeAndHttpHost()),
+			'public_prefix' => sprintf('%s/uploaded/files', Request::getSchemeAndHttpHost()),
 
 		],
 
 		// Amazon S3 Storage Driver
 		/*
 		'TippingCanoe\Phperclip\Storage\S3' => [
-			'bucket' => 'phperclip_files'
+			'bucket' => 'clipped_files'
 		],
 		*/
 
