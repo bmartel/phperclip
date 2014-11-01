@@ -2,14 +2,27 @@
 
 use TippingCanoe\Phperclip\Model\File as FileModel;
 use Symfony\Component\HttpFoundation\File\File;
+use TippingCanoe\Phperclip\Contracts\FileNameGenerator;
+use TippingCanoe\Phperclip\MimeResolver;
 
-class Filesystem extends BaseDriver {
+class Filesystem implements Driver {
 
 	/** @var string */
 	protected $publicPrefix;
 
 	/** @var string */
 	protected $root;
+
+	protected $nameGenerator;
+
+	protected $mimeResolver;
+
+
+	public function __construct(MimeResolver $mimeResolver, FileNameGenerator $nameGenerator) {
+
+		$this->nameGenerator = $nameGenerator;
+		$this->mimeResolver = $mimeResolver;
+	}
 
 	/**
 	 * @param $path
@@ -33,14 +46,15 @@ class Filesystem extends BaseDriver {
 
 	/**
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 * @internal param FileModel $file
 	 * @return string
 	 */
-	public function getPublicUri(FileModel $fileModel) {
+	public function getPublicUri(FileModel $fileModel, array $options = []) {
 
 		return sprintf('%s/%s',
 			$this->getPublicPrefix(),
-			$this->nameGenerator->fileName($fileModel)
+			$this->nameGenerator->fileName($fileModel, $options)
 		);
 	}
 
@@ -48,38 +62,50 @@ class Filesystem extends BaseDriver {
 	 * Saves a File.
 	 *
 	 * Exceptions can provide extended error information and will abort the save process.
+	 *
 	 * @param File $file
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 */
-	public function saveFile(File $file, FileModel $fileModel) {
+	public function saveFile(File $file, FileModel $fileModel, array $options = []) {
 
-		$file->move($this->root, $this->nameGenerator->fileName($fileModel));
+		$file->move($this->root, $this->nameGenerator->fileName($fileModel, $options));
 	}
 
 	/**
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 * @return bool
 	 */
-	public function has(FileModel $fileModel) {
+	public function has(FileModel $fileModel, array $options = []) {
 
-		return file_exists($this->generateFilePath($fileModel));
+		return file_exists($this->generateFilePath($fileModel, $options));
 	}
 
 	/**
 	 * Deletes a file.
 	 *
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 */
-	public function delete(FileModel $fileModel) {
+	public function delete(FileModel $fileModel, array $options = []) {
 
-		$pattern = sprintf('%s/%s-*.%s',
-			$this->root,
-			$fileModel->getKey(),
-			$this->mimeResolver->getExtension($fileModel->getMimeType())
-		);
+		// If we're deleting a derived file.
+		if($options) {
+			unlink($this->generateFilePath($fileModel, $options));
+		}
 
-		foreach (glob($pattern) as $filePath) {
-			unlink($filePath);
+		// This is the original image, so delete any derivations that may exist as well.
+		else {
+			$pattern = sprintf('%s/%s-*.%s',
+				$this->root,
+				$fileModel->getKey(),
+				$this->mimeResolver->getExtension($fileModel->getMimeType())
+			);
+
+			foreach (glob($pattern) as $filePath) {
+				unlink($filePath);
+			}
 		}
 
 	}
@@ -99,7 +125,6 @@ class Filesystem extends BaseDriver {
 		copy($originalPath, $tempOriginalPath);
 
 		return new File($tempOriginalPath);
-
 	}
 
 	//
@@ -116,11 +141,12 @@ class Filesystem extends BaseDriver {
 
 	/**
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 * @return string
 	 */
-	protected function generateFilePath(FileModel $fileModel) {
+	protected function generateFilePath(FileModel $fileModel, array $options = []) {
 
-		return sprintf('%s/%s', $this->root, $this->nameGenerator->fileName($fileModel));
+		return sprintf('%s/%s', $this->root, $this->nameGenerator->fileName($fileModel, $options));
 	}
 
 }

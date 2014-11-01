@@ -11,7 +11,7 @@ class FileNameGenerator implements Contracts\FileNameGenerator {
 		$this->mimeResolver = $mimeResolver;
 	}
 
-	public function fileName(File $file, array $options = null) {
+	public function fileName(File $file, array $options = []) {
 
 		return sprintf('%d-%s.%s',
 			$file->getKey(),
@@ -20,15 +20,15 @@ class FileNameGenerator implements Contracts\FileNameGenerator {
 		);
 	}
 
-	protected function generateHash(File $file, array $options = null) {
+	protected function generateHash(File $file, array $options = []) {
+
+		// Add any modification filters that may have run on the file.
+		$filters = array_key_exists('filters', $options) ? $options['filters'] : [];
 
 		$fileSignature = [
-			'id' => $file->getKey(),
-			'file_type' => $file->getMimeType(),
-			'slot' => $file->slot
+			'id' => (string) $file->getKey(),
+			'filters' => $filters
 		];
-
-		if($options) $fileSignature = array_merge($fileSignature, $options);
 
 		return md5(json_encode($this->recursiveKeySort($fileSignature)));
 	}
@@ -43,11 +43,9 @@ class FileNameGenerator implements Contracts\FileNameGenerator {
 
 		ksort($array);
 
-		foreach ($array as $key => $value) {
-			if (is_array($value)) {
+		foreach($array as $key => $value)
+			if(is_array($value))
 				$array[$key] = $this->recursiveKeySort($value);
-			}
-		}
 
 		return $array;
 	}

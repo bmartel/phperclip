@@ -17,9 +17,10 @@ abstract class FileProcessorAdapter implements FileProcessorInterface {
 	 * this method.
 	 *
 	 * @param File $file
+	 * @param array $options
 	 * @return null|bool|\Symfony\Component\HttpFoundation\File\File
 	 */
-	public function onSave(File $file) {
+	public function onSave(File $file, array $options = []) {
 		// TODO: Implement onSave() method.
 		return $file;
 	}
@@ -29,9 +30,10 @@ abstract class FileProcessorAdapter implements FileProcessorInterface {
 	 * this method.
 	 *
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 * @return null|bool|\TippingCanoe\Phperclip\Model\File
 	 */
-	public function onDelete(FileModel $fileModel) {
+	public function onDelete(FileModel $fileModel, array $options = []) {
 		// TODO: Implement onDelete() method.
 		return $fileModel;
 	}
@@ -41,9 +43,10 @@ abstract class FileProcessorAdapter implements FileProcessorInterface {
 	 * this method.
 	 *
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 * @return null|bool|\TippingCanoe\Phperclip\Model\File
 	 */
-	public function onMove(FileModel $fileModel) {
+	public function onMove(FileModel $fileModel, array $options = []) {
 		// TODO: Implement onMove() method.
 		return $fileModel;
 	}

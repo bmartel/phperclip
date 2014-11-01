@@ -19,24 +19,28 @@ interface Driver {
 	 *
 	 * @param File $file
 	 * @param FileModel $fileModel
+	 * @param array $options
+	 * @return
 	 */
-	public function saveFile(File $file, FileModel $fileModel);
+	public function saveFile(File $file, FileModel $fileModel, array $options = []);
 
 	/**
 	 * Returns the public URI for a file by a specific configuration.
 	 *
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 * @return string
 	 */
-	public function getPublicUri(FileModel $fileModel);
+	public function getPublicUri(FileModel $fileModel, array $options = []);
 
 	/**
 	 * Asks the driver if it has a particular file.
 	 *
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 * @return bool
 	 */
-	public function has(FileModel $fileModel);
+	public function has(FileModel $fileModel, array $options = []);
 
 	/**
 	 * Tells the driver to delete a file.
@@ -44,9 +48,10 @@ interface Driver {
 	 * Deleting must at least ensure that afterwards, any call to has() returns false.
 	 *
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 * @return
 	 */
-	public function delete(FileModel $fileModel);
+	public function delete(FileModel $fileModel, array $options = []);
 
 	/**
 	 * Tells the driver to prepare a copy of the original file locally.

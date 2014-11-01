@@ -47,12 +47,12 @@ class MockProcessorAdapter extends FileProcessorAdapter {
 
 	protected $mimeTypes = ['image/png', 'text/plain'];
 
-	public function onSave(File $file) {
+	public function onSave(File $file, array $options = []) {
 
 		return false;
 	}
 
-	public function onDelete(FileModel $fileModel) {
+	public function onDelete(FileModel $fileModel, array $options = []) {
 
 		$fileModel->setAttribute('mime_type', 'image/jpeg');
 

@@ -3,5 +3,6 @@
 use TippingCanoe\Phperclip\Model\File;
 
 interface FileNameGenerator {
-	public function fileName(File $file, array $options = null);
+
+	public function fileName(File $file, array $options = []);
 } 

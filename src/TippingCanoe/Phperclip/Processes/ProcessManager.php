@@ -18,9 +18,10 @@ class ProcessManager {
 	/**
 	 * @param \Symfony\Component\HttpFoundation\File\File|\TippingCanoe\Phperclip\Model\File $file
 	 * @param $action
+	 * @param array $options
 	 * @return bool
 	 */
-	public function dispatch($file, $action) {
+	public function dispatch($file, $action, array $options = []) {
 
 		// Do not process if the file is not an expected file type object.
 		if (!($this->validFileObject($file))) {
@@ -34,7 +35,7 @@ class ProcessManager {
 
 				// Call the processor method
 				if (method_exists($processor, $action)) {
-					$file = $processor->$action($file);
+					$file = $processor->$action($file, $options);
 				}
 
 				// If we return anything but the file here, stop the processing.

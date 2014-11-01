@@ -18,26 +18,29 @@ interface FileProcessorInterface {
 	 * this method.
 	 *
 	 * @param File $file
+	 * @param array $options
 	 * @return null|bool|\Symfony\Component\HttpFoundation\File\File
 	 */
-	public function onSave(File $file);
+	public function onSave(File $file, array $options = []);
 
 	/**
 	 * A method to hook into the file delete process. Allows intervention of the delete operation by returning a false-type from
 	 * this method.
 	 *
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 * @return null|bool|\TippingCanoe\Phperclip\Model\File
 	 */
-	public function onDelete(FileModel $fileModel);
+	public function onDelete(FileModel $fileModel, array $options = []);
 
 	/**
 	 * A method to hook into the file move process. Allows intervention of the move operation by returning a false-type from
 	 * this method.
 	 *
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 * @return null|bool|\TippingCanoe\Phperclip\Model\File
 	 */
-	public function onMove(FileModel $fileModel);
+	public function onMove(FileModel $fileModel, array $options = []);
 
 }

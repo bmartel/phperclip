@@ -30,6 +30,7 @@ class Service {
 
 	/**
 	 * @param FileRepository $fileRepository
+	 * @param ProcessManager $processManager
 	 * @param \TippingCanoe\Phperclip\Storage\Driver[] $storageDrivers
 	 * @throws \Exception
 	 */
@@ -88,17 +89,17 @@ class Service {
 
 	/**
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 * @return string
 	 */
-	public function getPublicUri(FileModel $fileModel) {
+	public function getPublicUri(FileModel $fileModel, array $options = []) {
 
-		if (!$this->getDriver()->has($fileModel)) {
+		if (!$this->getDriver()->has($fileModel, $options)) {
 			$tempOriginal = $this->getDriver()->tempOriginal($fileModel);
-			$this->saveFile($tempOriginal, $fileModel);
+			$this->saveFile($tempOriginal, $fileModel, $options);
 		}
 
-		return $this->getDriver()->getPublicUri($fileModel);
-
+		return $this->getDriver()->getPublicUri($fileModel, $options);
 	}
 
 	/**
@@ -156,16 +157,17 @@ class Service {
 	 *
 	 * @param File $file
 	 * @param Clippable $clippable
+	 * @param array $options
 	 * @return null|FileModel
 	 */
-	public function saveFromFile(File $file, Clippable $clippable = null) {
+	public function saveFromFile(File $file, Clippable $clippable = null, array $options = []) {
 
 		// Determine if there are any registered processors which know of this file type
 		// and the current action scope.
 
-		if (!$file = $this->processManager->dispatch($file, 'onSave')) {
+		if (!$file = $this->processManager->dispatch($file, 'onSave', $options)) {
 			return null;
-		} //Bail if for whatever reason one of the processors returns false
+		}
 
 		$newFile = $this->createFileRecord($file);
 
@@ -174,7 +176,7 @@ class Service {
 			$clippable->clippedFiles()->save($newFile);
 		}
 
-		$this->saveFile($file, $newFile);
+		$this->saveFile($file, $newFile, $options);
 
 		return $newFile;
 	}
@@ -184,47 +186,54 @@ class Service {
 	 *
 	 * @param $uri
 	 * @param Clippable $clippable
+	 * @param array $options
 	 * @return null|FileModel
 	 */
-	public function saveFromUri($uri, Clippable $clippable = null) {
+	public function saveFromUri($uri, Clippable $clippable = null, array $options = []) {
 
 		// Download the file.
 		// Use sys_get_temp_dir so that systems-level configs can apply.
 		$tempFilePath = tempnam(sys_get_temp_dir(), null);
-		file_put_contents($tempFilePath, fopen($uri, 'r'));
 
-		$tempFile = new File($tempFilePath);
+		$fileContent = @file_get_contents($uri);
 
-		return $this->saveFromFile($tempFile, $clippable);
+		file_put_contents($tempFilePath, $fileContent);
+
+		return $this->saveFromFile(new File($tempFilePath), $clippable, $options);
 	}
 
 	/**
 	 * Delete the file
 	 *
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 */
-	public function delete(FileModel $fileModel) {
+	public function delete(FileModel $fileModel, array $options = []) {
 
 		// Determine if there are any registered processors which know of this file type
 		// and the current action scope.
 
-		if (!$fileModel = $this->processManager->dispatch($fileModel, 'onDelete')) {
+		if (!$fileModel = $this->processManager->dispatch($fileModel, 'onDelete', $options)) {
 			return null;
-		} //Bail if for whatever reason one of the processors returns false
+		}
 
-		$this->getDriver()->delete($fileModel);
+		// Perform the delete on the actual file
+		$this->getDriver()->delete($fileModel, $options);
 
-		$fileModel->forceDelete();
-
+		// If this is the original image also remove it from the database.
+		if (!array_key_exists('filters', $options)) {
+			$fileModel->forceDelete();
+		}
 	}
 
 	/**
 	 * @param $id
+	 * @param array $options
 	 */
-	public function deleteById($id) {
+	public function deleteById($id, array $options = []) {
 
 		if ($file = $this->getById($id)) {
-			$this->delete($file);
+			$this->delete($file, $options);
 		}
 	}
 
@@ -299,7 +308,7 @@ class Service {
 
 		if (!$fileModel = $this->processManager->dispatch($fileModel, 'onMove')) {
 			return null;
-		} //Bail if for whatever reason one of the processors returns false
+		}
 
 		try {
 			// Assign the new slot to our file.
@@ -348,9 +357,10 @@ class Service {
 	 * Create the database entry for a file.
 	 *
 	 * @param File $file
+	 * @param array $options
 	 * @return FileModel
 	 */
-	protected function createFileRecord(File $file) {
+	protected function createFileRecord(File $file, array $options = []) {
 
 		// Obtain file metadata and save the record to the database.
 
@@ -358,8 +368,13 @@ class Service {
 			'mime_type' => $file->getMimeType()
 		];
 
-		return $this->fileRepository->create($attributes);
+		if (array_key_exists('attributes', $options)) {
+			$newAttributes = $options['attributes'];
+			$newAttributes = is_array($newAttributes) ? $newAttributes : [$newAttributes];
+			$attributes = array_merge($attributes, $newAttributes);
+		}
 
+		return $this->fileRepository->create($attributes);
 	}
 
 	/**
@@ -367,10 +382,11 @@ class Service {
 	 *
 	 * @param File $file
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 */
-	protected function saveFile(File $file, FileModel $fileModel) {
+	protected function saveFile(File $file, FileModel $fileModel, array $options = []) {
 
-		$this->getDriver()->saveFile($file, $fileModel);
+		$this->getDriver()->saveFile($file, $fileModel, $options);
 	}
 
 }

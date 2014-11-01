@@ -24,7 +24,6 @@ class FileNameGeneratorSpec extends ObjectBehavior
 		$fileModel->getMimeType()->willReturn('image/png');
 		$fileModel->getKey()->willReturn(999);
 		$fileModel->setAttribute('slot', 'profile');
-		$fileModel->getAttribute('slot')->shouldBeCalled();
 
 		$options = [
 			'filters' => [
@@ -32,7 +31,7 @@ class FileNameGeneratorSpec extends ObjectBehavior
 				'blur' => 'run blur filter here'
 			],
 			'validators' => [
-				'size' => 'run size validator'
+				'image_size' => 'run image size validator'
 			]
 		];
 
@@ -40,7 +39,7 @@ class FileNameGeneratorSpec extends ObjectBehavior
 
 		$mixedOptions = [
 			'validators' => [
-				'size' => 'run size validator'
+				'file_size' => 'run file size validator'
 			],
 			'filters' => [
 				'blur' => 'run blur filter here',
