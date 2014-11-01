@@ -28,7 +28,7 @@ class ProcessManagerSpec extends ObjectBehavior {
 
 		$file->getMimeType()->willReturn('image/png');
 
-		$this->dispatch($file, 'onSave')->shouldReturn(false);
+		$this->dispatch($file, 'onSave')->shouldReturn(null);
 
 	}
 
