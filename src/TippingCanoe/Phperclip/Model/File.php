@@ -31,7 +31,7 @@ class File extends Model{
 	}
 
 	/**
-	 * @param \Illuminate\Database\Eloquent\Builder $query
+	 * @param \Illuminate\Database\Eloquent\Builder|Builder $query
 	 * @param string $type
 	 * @param int $id
 	 * @return \Illuminate\Database\Eloquent\Builder
@@ -44,7 +44,7 @@ class File extends Model{
 	}
 
 	/**
-	 * @param \Illuminate\Database\Eloquent\Builder $query
+	 * @param \Illuminate\Database\Eloquent\Builder|Builder $query
 	 * @param string $slot
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
@@ -53,7 +53,7 @@ class File extends Model{
 	}
 
 	/**
-	 * @param \Illuminate\Database\Eloquent\Builder $query
+	 * @param \Illuminate\Database\Eloquent\Builder|Builder $query
 	 * @param string $slot
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */

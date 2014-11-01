@@ -34,16 +34,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider{
 		/** @var \Illuminate\Config\Repository $config */
 		$config = $this->app->make('config');
 
-		//		// I'm not binding this as a singleton so that sloppy state management doesn't get a chance to ruin things.
-		//		$this->app->bind('Intervention\Image\Image', function (Application $app) {
-		//			return new Image();
-		//		});
-
 		$this->app->bind('TippingCanoe\Phperclip\Repository\FileInterface', 'TippingCanoe\Phperclip\Repository\File');
 
-
-
-		$this->app->singleton('TippingCanoe\Phperclip\Service', function ($app) use ($config) {
+		$this->app->bindShared('TippingCanoe\Phperclip\Service', function ($app) use ($config) {
 
 			//
 			// Amazon S3
@@ -77,7 +70,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider{
 					$processors[] = $app->make($processor);
 				}
 
-				$this->app->bind('TippingCanoe\Phperclip\Processes\ProcessManager', new ProcessManager($processors));
+				$this->app->bindShared('TippingCanoe\Phperclip\Processes\ProcessManager', new ProcessManager($processors));
 			}
 
 			return new PhperclipService(

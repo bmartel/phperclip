@@ -10,60 +10,63 @@ class ProcessManager {
 	 */
 	protected $processors;
 
-
 	public function __construct(array $processors = null) {
 
 		$this->processors = $processors;
 	}
 
 	/**
-	 * Dispatches the correct processors for the requesting mimetype
-	 *
-	 * @param $mimeType
-	 * @return \TippingCanoe\Phperclip\Processes\FileProcessor[]
+	 * @param $file
+	 * @param $action
+	 * @return bool
 	 */
 	public function dispatch($file, $action) {
 
-		$result = true;
+		// Do not process if the file is not an expected file type object.
+		if (!($this->validFileObject($file))) {
+			return null;
+		}
 
-		if (empty($this->processors) === false) {
-			foreach ($this->processors as $processor) {
+		$mimeType = $file->getMimeType();
 
-				$mimeType = null;
+		if ($processors = $this->getProcessorsFor($mimeType)) {
+			foreach ($processors as $processor) {
 
-				if ($file instanceof File || $file instanceof FileModel) {
-					$mimeType = $file->getMimeType();
+				// Call the processor method
+				if (method_exists($processor, $action)) {
+					$file = $processor->$action($file);
 				}
 
-				if (!$mimeType) {
-					return false;
-				} // If the file passed in is not one of the expected types, bail.
-
-				if ($this->hasProcessFor($mimeType, $processor->registeredMimes())) {
-
-					// Call the processor method
-					if (method_exists($processor, $action)) {
-						$result &= $processor->$action($file);
-					}
-
-					if (!$result) {
-						return (bool) $result;
-					}
+				// If we return anything but the file here, stop the processing.
+				if (!($this->validFileObject($file))) {
+					return null;
 				}
 			}
 		}
 
-		return (bool) $result;
+		return $file;
 	}
 
 	/**
-	 * Check if there are processors available for the mimetypes request.
+	 * Retrieve all processors which are registered to act on the mimetype.
 	 *
 	 * @param $mimeType
+	 * @return null|array|\TippingCanoe\Phperclip\Processes\FileProcessor[]
+	 */
+	protected function getProcessorsFor($mimeType) {
+		if(empty($this->processors)) return null;
+
+		return array_filter($this->processors, function($processor) use($mimeType){
+			return in_array($mimeType, $processor->registeredMimes());
+		});
+	}
+
+	/**
+	 * @param $file
 	 * @return bool
 	 */
-	protected function hasProcessFor($mimeType, $processorMimes) {
+	private function validFileObject($file) {
 
-		return in_array($mimeType, $processorMimes);
+		return $file instanceof File || $file instanceof FileModel;
 	}
 }

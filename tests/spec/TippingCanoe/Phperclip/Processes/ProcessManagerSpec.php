@@ -5,26 +5,26 @@ namespace spec\TippingCanoe\Phperclip\Processes;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\HttpFoundation\File\File;
+use TippingCanoe\Phperclip\Model\File as FileModel;
 use TippingCanoe\Phperclip\Processes\FileProcessor;
 
-class ProcessManagerSpec extends ObjectBehavior
-{
-	function let()
-	{
+class ProcessManagerSpec extends ObjectBehavior {
+
+	function let() {
+
 		$processors = [];
 
-		$processors[]= new MockProcessor();
+		$processors[] = new MockProcessor();
 
 		$this->beConstructedWith($processors);
 	}
 
-    function it_is_initializable()
-    {
-        $this->shouldHaveType('TippingCanoe\Phperclip\Processes\ProcessManager');
-    }
+	function it_is_initializable() {
 
-	function it_can_dispatch_processors_for_file_actions(File $file)
-	{
+		$this->shouldHaveType('TippingCanoe\Phperclip\Processes\ProcessManager');
+	}
+
+	function it_can_dispatch_processors_for_file_actions(File $file) {
 
 		$file->getMimeType()->willReturn('image/png');
 
@@ -32,26 +32,31 @@ class ProcessManagerSpec extends ObjectBehavior
 
 	}
 
-	function it_can_modify_files_through_processors(\TippingCanoe\Phperclip\Model\File $fileModel) {
+	function it_can_modify_files_through_processors(FileModel $fileModel) {
+
 		$fileModel->getMimeType()->willReturn('text/plain');
 
-		$fileModel->setAttribute('mime_type' , 'image/jpeg')->shouldBeCalled();
+		$fileModel->setAttribute('mime_type', 'image/jpeg')->shouldBeCalled();
 
-		$this->dispatch($fileModel, 'onDelete')->shouldReturn(true);
+		$this->dispatch($fileModel, 'onDelete')->shouldReturn($fileModel);
 
 	}
 }
 
-class MockProcessor extends FileProcessor{
+class MockProcessor extends FileProcessor {
+
 	protected $mimeTypes = ['image/png', 'text/plain'];
 
-	public function onSave(File &$file) {
+	public function onSave(File $file) {
+
 		return false;
 	}
 
-	public function onDelete(\TippingCanoe\Phperclip\Model\File &$fileModel) {
-		$fileModel->setAttribute('mime_type' , 'image/jpeg');
-		return true;
+	public function onDelete(FileModel $fileModel) {
+
+		$fileModel->setAttribute('mime_type', 'image/jpeg');
+
+		return $fileModel;
 	}
 
 
