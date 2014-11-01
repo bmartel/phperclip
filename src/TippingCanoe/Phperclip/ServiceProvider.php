@@ -34,6 +34,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider{
 		/** @var \Illuminate\Config\Repository $config */
 		$config = $this->app->make('config');
 
+		$this->app->bind('TippingCanoe\Phperclip\Contracts\FileNameGenerator', $config->get('phperclip::filename_generator'));
+
 		$this->app->bind('TippingCanoe\Phperclip\Repository\FileInterface', 'TippingCanoe\Phperclip\Repository\File');
 
 		$this->app->bindShared('TippingCanoe\Phperclip\Service', function ($app) use ($config) {

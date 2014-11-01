@@ -1,27 +1,15 @@
 <?php namespace TippingCanoe\Phperclip\Storage;
 
 use TippingCanoe\Phperclip\Model\File as FileModel;
-use TippingCanoe\Phperclip\MimeResolver;
 use Symfony\Component\HttpFoundation\File\File;
 
-class Filesystem implements Driver {
+class Filesystem extends BaseDriver {
 
 	/** @var string */
 	protected $publicPrefix;
 
 	/** @var string */
 	protected $root;
-
-	/**
-	 * @var \TippingCanoe\Phperclip\MimeResolver
-	 */
-	protected $mimeResolver;
-
-	public function __construct(MimeResolver $mimeResolver) {
-
-		$this->mimeResolver = $mimeResolver;
-	}
-
 
 	/**
 	 * @param $path
@@ -44,15 +32,15 @@ class Filesystem implements Driver {
 	//
 
 	/**
-	 * @param \TippingCanoe\Phperclip\Model\File $file
-	 * @param array $filters
+	 * @param FileModel $fileModel
+	 * @internal param FileModel $file
 	 * @return string
 	 */
 	public function getPublicUri(FileModel $fileModel) {
 
 		return sprintf('%s/%s',
 			$this->getPublicPrefix(),
-			$this->generateFileName($fileModel)
+			$this->nameGenerator->fileName($fileModel)
 		);
 	}
 
@@ -65,7 +53,7 @@ class Filesystem implements Driver {
 	 */
 	public function saveFile(File $file, FileModel $fileModel) {
 
-		$file->move($this->root, $this->generateFileName($fileModel));
+		$file->move($this->root, $this->nameGenerator->fileName($fileModel));
 	}
 
 	/**
@@ -87,13 +75,12 @@ class Filesystem implements Driver {
 		$pattern = sprintf('%s/%s-*.%s',
 			$this->root,
 			$fileModel->getKey(),
-			$this->mimeResolver->getExtension($fileModel->mime_type)
+			$this->mimeResolver->getExtension($fileModel->getMimeType())
 		);
 
 		foreach (glob($pattern) as $filePath) {
 			unlink($filePath);
 		}
-
 
 	}
 
@@ -105,12 +92,7 @@ class Filesystem implements Driver {
 	 */
 	public function tempOriginal(FileModel $fileModel) {
 
-		$originalPath = sprintf('%s/%s-%s.%s',
-			$this->root,
-			$fileModel->getKey(),
-			$this->generateHash($fileModel),
-			$this->mimeResolver->getExtension($fileModel->mime_type)
-		);
+		$originalPath = $this->generateFilePath($fileModel);
 
 		$tempOriginalPath = tempnam(sys_get_temp_dir(), null);
 
@@ -133,61 +115,12 @@ class Filesystem implements Driver {
 	}
 
 	/**
-	 * Generates a hash based on a file key
-	 *
-	 * @param File $fileModel
-	 * @return string
-	 */
-	protected function generateHash(FileModel $fileModel) {
-
-		$state = [
-			'id' => (string) $fileModel->getKey()
-		];
-
-		return md5(json_encode($state));
-
-	}
-
-	/**
-	 * @param FileModel $fileModel
-	 * @return string
-	 */
-	protected function generateFileName(FileModel $fileModel) {
-
-		return sprintf('%s-%s.%s',
-			$fileModel->getKey(),
-			$this->generateHash($fileModel),
-			$this->mimeResolver->getExtension($fileModel->mime_type)
-		);
-	}
-
-	/**
 	 * @param FileModel $fileModel
 	 * @return string
 	 */
 	protected function generateFilePath(FileModel $fileModel) {
 
-		return sprintf('%s/%s', $this->root, $this->generateFileName($fileModel));
-	}
-
-	/**
-	 * Utility method to ensure that key signatures always appear in the same order.
-	 *
-	 * @param array $array
-	 * @return array
-	 */
-	protected function recursiveKeySort(array $array) {
-
-		ksort($array);
-
-		foreach ($array as $key => $value) {
-			if (is_array($value)) {
-				$array[$key] = $this->recursiveKeySort($value);
-			}
-		}
-
-		return $array;
-
+		return sprintf('%s/%s', $this->root, $this->nameGenerator->fileName($fileModel));
 	}
 
 }

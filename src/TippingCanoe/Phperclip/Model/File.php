@@ -112,5 +112,4 @@ class File extends Model{
 	public function scopeInIntegerSlot(Builder $query) {
 		return $query->whereRaw(sprintf('%s.slot REGEXP \'^[[:digit:]]+$\'', $query->getQuery()->from));
 	}
-
-} 
+}

@@ -6,7 +6,7 @@ use TippingCanoe\Phperclip\Model\File as FileModel;
 class ProcessManager {
 
 	/**
-	 * @var \TippingCanoe\Phperclip\Processes\FileProcessor[]
+	 * @var \TippingCanoe\Phperclip\Processes\FileProcessorAdapter[]
 	 */
 	protected $processors;
 
@@ -16,7 +16,7 @@ class ProcessManager {
 	}
 
 	/**
-	 * @param $file
+	 * @param \Symfony\Component\HttpFoundation\File\File|\TippingCanoe\Phperclip\Model\File $file
 	 * @param $action
 	 * @return bool
 	 */
@@ -51,7 +51,7 @@ class ProcessManager {
 	 * Retrieve all processors which are registered to act on the mimetype.
 	 *
 	 * @param $mimeType
-	 * @return null|array|\TippingCanoe\Phperclip\Processes\FileProcessor[]
+	 * @return null|array|\TippingCanoe\Phperclip\Processes\FileProcessorAdapter[]
 	 */
 	protected function getProcessorsFor($mimeType) {
 		if(empty($this->processors)) return null;

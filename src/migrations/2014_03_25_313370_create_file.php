@@ -25,6 +25,7 @@ class CreateFile extends Migration {
 				->unsigned()
 				->nullable()
 			;
+
 			$table
 				->string('clippable_type')
 				->nullable()

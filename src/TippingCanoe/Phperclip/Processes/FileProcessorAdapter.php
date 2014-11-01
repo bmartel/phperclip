@@ -3,7 +3,7 @@
 use Symfony\Component\HttpFoundation\File\File;
 use TippingCanoe\Phperclip\Model\File as FileModel;
 
-abstract class FileProcessor implements FileProcessorInterface {
+abstract class FileProcessorAdapter implements FileProcessorInterface {
 
 	protected $mimeTypes = [];
 

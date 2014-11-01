@@ -6,7 +6,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\HttpFoundation\File\File;
 use TippingCanoe\Phperclip\Model\File as FileModel;
-use TippingCanoe\Phperclip\Processes\FileProcessor;
+use TippingCanoe\Phperclip\Processes\FileProcessorAdapter;
 
 class ProcessManagerSpec extends ObjectBehavior {
 
@@ -14,7 +14,7 @@ class ProcessManagerSpec extends ObjectBehavior {
 
 		$processors = [];
 
-		$processors[] = new MockProcessor();
+		$processors[] = new MockProcessorAdapter();
 
 		$this->beConstructedWith($processors);
 	}
@@ -43,7 +43,7 @@ class ProcessManagerSpec extends ObjectBehavior {
 	}
 }
 
-class MockProcessor extends FileProcessor {
+class MockProcessorAdapter extends FileProcessorAdapter {
 
 	protected $mimeTypes = ['image/png', 'text/plain'];
 

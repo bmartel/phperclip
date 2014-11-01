@@ -17,15 +17,15 @@ interface Driver {
 	 *
 	 * Exceptions can provide extended error information and will abort the save process.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\File\File $file
-	 * @param \TippingCanoe\Phperclip\Model\File $fileModel
+	 * @param File $file
+	 * @param FileModel $fileModel
 	 */
 	public function saveFile(File $file, FileModel $fileModel);
 
 	/**
 	 * Returns the public URI for a file by a specific configuration.
 	 *
-	 * @param \TippingCanoe\Phperclip\Model\File $fileModel
+	 * @param FileModel $fileModel
 	 * @return string
 	 */
 	public function getPublicUri(FileModel $fileModel);
@@ -33,7 +33,7 @@ interface Driver {
 	/**
 	 * Asks the driver if it has a particular file.
 	 *
-	 * @param \TippingCanoe\Phperclip\Model\File $file
+	 * @param FileModel $fileModel
 	 * @return bool
 	 */
 	public function has(FileModel $fileModel);
@@ -43,15 +43,16 @@ interface Driver {
 	 *
 	 * Deleting must at least ensure that afterwards, any call to has() returns false.
 	 *
-	 * @param \TippingCanoe\Phperclip\Model\File $file
+	 * @param FileModel $fileModel
+	 * @return
 	 */
 	public function delete(FileModel $fileModel);
 
 	/**
 	 * Tells the driver to prepare a copy of the original file locally.
 	 *
-	 * @param \TippingCanoe\Phperclip\Model\File $fileModel
-	 * @return \Symfony\Component\HttpFoundation\File\File
+	 * @param FileModel $fileModel
+	 * @return File
 	 */
 	public function tempOriginal(FileModel $fileModel);
 

@@ -15,7 +15,8 @@
 		"aws/aws-sdk-php": "2.5.*",
 		"illuminate/http": "4.2.*",
         "illuminate/database": "4.2.*",
-        "illuminate/config": "4.2.*"
+        "illuminate/config": "4.2.*",
+		"intervention/image": "2.0.*"
 	},
 	"require-dev" : {
 		"phpspec/phpspec": "2.0.*@dev",

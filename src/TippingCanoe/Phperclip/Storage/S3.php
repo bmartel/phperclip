@@ -1,12 +1,13 @@
 <?php namespace TippingCanoe\Phperclip\Storage;
 
 use Symfony\Component\HttpFoundation\File\File;
+use TippingCanoe\Phperclip\FileNameGenerator;
 use TippingCanoe\Phperclip\Model\File as FileModel;
 use TippingCanoe\Phperclip\MimeResolver;
 use Aws\S3\S3Client;
 use Aws\S3\Enum\CannedAcl;
 
-class S3 implements Driver {
+class S3 extends BaseDriver {
 
 
 	/**
@@ -20,19 +21,14 @@ class S3 implements Driver {
 	protected $awsBucket;
 
 	/**
-	 * @var \TippingCanoe\Phperclip\MimeResolver
-	 */
-	protected $mimeResolver;
-
-	/**
+	 * @param MimeResolver $mimeResolver
+	 * @param FileNameGenerator $nameGenerator
 	 * @param S3Client $s3Client
 	 */
-	public function __construct(
-		S3Client $s3Client,
-		MimeResolver $mimeResolver
-	) {
 
+	public function __construct(MimeResolver $mimeResolver, FileNameGenerator $nameGenerator, S3Client $s3Client) {
 		$this->s3 = $s3Client;
+		$this->nameGenerator = $nameGenerator;
 		$this->mimeResolver = $mimeResolver;
 	}
 
@@ -56,11 +52,10 @@ class S3 implements Driver {
 		// Upload a file.
 		$this->s3->putObject(array(
 			'Bucket' => $this->awsBucket,
-			'Key' => $this->generateFileName($fileModel),
+			'Key' => $this->nameGenerator->fileName($fileModel),
 			'SourceFile' => $file->getRealPath(),
 			'ACL' => CannedAcl::PRIVATE_ACCESS,
 		));
-
 	}
 
 	/**
@@ -72,10 +67,8 @@ class S3 implements Driver {
 	public function getPublicUri(FileModel $fileModel) {
 
 		// Get a timed url
-		return $this->s3->getObjectUrl($this->awsBucket, $this->generateFileName($fileModel), '+10 minutes');
-
+		return $this->s3->getObjectUrl($this->awsBucket, $this->nameGenerator->fileName($fileModel), '+10 minutes');
 	}
-
 
 	/**
 	 * Asks the driver if it has a particular file.
@@ -88,8 +81,7 @@ class S3 implements Driver {
 		// Check if file exists
 		return $this->s3->doesObjectExist(
 			$this->awsBucket,
-			$this->generateFileName($fileModel));
-
+			$this->nameGenerator->fileName($fileModel));
 	}
 
 	/**
@@ -104,9 +96,8 @@ class S3 implements Driver {
 		// Delete a file.
 		$this->s3->deleteObject(array(
 			'Bucket' => $this->awsBucket,
-			'Key' => $this->generateFileName($fileModel),
+			'Key' => $this->nameGenerator->fileName($fileModel),
 		));
-
 	}
 
 	/**
@@ -120,11 +111,7 @@ class S3 implements Driver {
 		// Recreate original filename
 		$tempOriginalPath = tempnam(sys_get_temp_dir(), null);
 
-		$originalPath = sprintf('%s-%s.%s',
-			$fileModel->getKey(),
-			$this->generateHash($fileModel),
-			$this->mimeResolver->getExtension($fileModel->mime_type)
-		);
+		$originalPath = $this->nameGenerator->fileName($fileModel);
 
 		// Download file
 		$this->s3->getObject(array(
@@ -134,60 +121,6 @@ class S3 implements Driver {
 		));
 
 		return new File($tempOriginalPath);
-
 	}
 
-	//
-	// Utility Methods
-	//
-
-	/**
-	 * @param FileModel $fileModel
-	 * @return string
-	 */
-	protected function generateFileName(FileModel $fileModel) {
-
-		return sprintf('%s-%s.%s',
-			$fileModel->getKey(),
-			$this->generateHash($fileModel),
-			$this->mimeResolver->getExtension($fileModel->mime_type)
-		);
-
-	}
-
-	/**
-	 * Generates a hash based on a file key.
-	 *
-	 * @param FileModel $fileModel
-	 * @return string
-	 */
-	protected function generateHash(FileModel $fileModel) {
-
-		$state = [
-			'id' => (string) $fileModel->getKey()
-		];
-
-		return md5(json_encode($state));
-
-	}
-
-	/**
-	 * Utility method to ensure that key signatures always appear in the same order.
-	 *
-	 * @param array $array
-	 * @return array
-	 */
-	protected function recursiveKeySort(array $array) {
-
-		ksort($array);
-
-		foreach ($array as $key => $value) {
-			if (is_array($value)) {
-				$array[$key] = $this->recursiveKeySort($value);
-			}
-		}
-
-		return $array;
-
-	}
 } 

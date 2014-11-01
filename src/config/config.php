@@ -1,12 +1,17 @@
 <?php return [
 
+	// Class used to generate file names for files
+	'filename_generator' => 'TippingCanoe\Phperclip\FileNameGenerator',
+
 	// Register File Processors
 	'processors' => [
 
-		//      Implement your own file specific processing by adding a processor here.
-		//
-		//		'TippingCanoe/Phperclip/Processes/ImageProcessor',
-		//		'TippingCanoe/Phperclip/Processes/PdfProcessor',
+		'TippingCanoe\Phperclip\Processes\ImageProcessor',
+
+		/*
+		 * Implement your own file specific processing by adding more processors here
+		 */
+
 	],
 
 	// Multiple storage options.
@@ -15,10 +20,10 @@
 		'TippingCanoe\Phperclip\Storage\Filesystem' => [
 
 			// Directory that Phperclip can manage everything under.
-			'root' => public_path() . '/uploaded/files',
+			'root' => public_path() . '/files/uploaded',
 
 			// Public, client-accessible prefix pointing to wherever the root is hosted, including scheme.
-			'public_prefix' => sprintf('%s/uploaded/files', Request::getSchemeAndHttpHost()),
+			'public_prefix' => sprintf('%s/files/uploaded', Request::getSchemeAndHttpHost()),
 
 		],
 
