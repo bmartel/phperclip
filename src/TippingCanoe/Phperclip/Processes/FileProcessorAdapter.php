@@ -148,13 +148,13 @@ class FileProcessorAdapter implements FileProcessor, MessageProviderInterface {
 	protected function runValidation($image, array $options = []) {
 
 		// Need the validation rules from options array to exist.
-		if(array_key_exists('validation', $options)) {
+		if (empty($options) || !array_key_exists('validation', $options)) {
 			return true;
 		}
 
-		$validation = Validator::make(compact('image'), ['image'=> $options['validation']]);
+		$validation = Validator::make(compact('image'), ['image' => $options['validation']]);
 
-		if($valid = $validation->fails()) {
+		if ($valid = $validation->fails()) {
 
 			$this->addMessageResponse($validation, true);
 		}

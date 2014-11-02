@@ -2,7 +2,7 @@
 
 use App;
 use Symfony\Component\HttpFoundation\File\File;
-use TippingCanoe\Phperclip\Processes\Image\Filter;
+use TippingCanoe\Phperclip\Contracts\Filter;
 use Validator;
 
 class ImageProcessor extends FileProcessorAdapter {
@@ -12,7 +12,7 @@ class ImageProcessor extends FileProcessorAdapter {
 	public function onSave(File $file, array $options = []) {
 
 		// Run validation on the image
-		if(!$this->runValidation($file, $options)) {
+		if (!$this->runValidation($file, $options)) {
 			// If validation fails, stop processing immediately.
 			return false;
 		}
@@ -34,14 +34,14 @@ class ImageProcessor extends FileProcessorAdapter {
 	private function runFilters(File $file, array $options = []) {
 
 		// Need the filters from the options array to exist.
-		if (!array_key_exists('filters', $options) && !is_array($options['filters'])) {
+		if (empty($options) || !array_key_exists('filters', $options) || !is_array($options['filters'])) {
 			return null;
 		}
 
 		foreach ($options['filters'] as $filter) {
 
 			/**
-			 * @var \TippingCanoe\Phperclip\Processes\Image\Filter $abstractFilterClass
+			 * @var \TippingCanoe\Phperclip\Contracts\Filter $abstractFilterClass
 			 */
 			if (!empty($filter) && is_array($filter)) {
 				// Set any class property configs
