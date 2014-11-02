@@ -109,8 +109,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 				$processors[] = $app->make($processor);
 			}
 
-			$this->app->bindShared('TippingCanoe\Phperclip\Processes\ProcessManager', function () use ($processors) {
-				return new ProcessManager($processors);
+			$this->app->bindShared('TippingCanoe\Phperclip\Processes\ProcessManager', function () use ($app, $processors) {
+				return new ProcessManager($app['session'], $processors);
 			});
 		}
 	}

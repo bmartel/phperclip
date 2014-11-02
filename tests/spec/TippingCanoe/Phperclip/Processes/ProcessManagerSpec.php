@@ -2,6 +2,7 @@
 
 namespace spec\TippingCanoe\Phperclip\Processes;
 
+use Illuminate\Session\SessionManager;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\HttpFoundation\File\File;
@@ -10,13 +11,13 @@ use TippingCanoe\Phperclip\Processes\FileProcessorAdapter;
 
 class ProcessManagerSpec extends ObjectBehavior {
 
-	function let() {
+	function let(SessionManager $session) {
 
 		$processors = [];
 
 		$processors[] = new MockProcessorAdapter();
 
-		$this->beConstructedWith($processors);
+		$this->beConstructedWith($session, $processors);
 	}
 
 	function it_is_initializable() {
@@ -58,6 +59,5 @@ class MockProcessorAdapter extends FileProcessorAdapter {
 
 		return $fileModel;
 	}
-
 
 }

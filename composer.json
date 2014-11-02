@@ -22,6 +22,9 @@
 		"phpspec/phpspec": "2.0.*@dev",
 		"mockery/mockery": "0.9.*@dev"
 	},
+	"suggest": {
+		"cviebrock/image-validator": "Extra Laravel validation rules for dealing with images."
+	},
 	"autoload": {
 		"classmap": [
 			"src/migrations"
