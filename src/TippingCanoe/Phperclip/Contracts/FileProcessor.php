@@ -1,9 +1,9 @@
-<?php namespace TippingCanoe\Phperclip\Processes;
+<?php namespace TippingCanoe\Phperclip\Contracts;
 
 use Symfony\Component\HttpFoundation\File\File;
 use \TippingCanoe\Phperclip\Model\File as FileModel;
 
-interface FileProcessorInterface {
+interface FileProcessor {
 
 	/**
 	 * Registers this Processor for use with the file mime types specified.

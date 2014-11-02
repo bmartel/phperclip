@@ -3,9 +3,10 @@
 use Illuminate\Support\Contracts\MessageProviderInterface;
 use Illuminate\Support\MessageBag;
 use Symfony\Component\HttpFoundation\File\File;
+use TippingCanoe\Phperclip\Contracts\FileProcessor;
 use TippingCanoe\Phperclip\Model\File as FileModel;
 
-class FileProcessorAdapter implements FileProcessorInterface, MessageProviderInterface {
+class FileProcessorAdapter implements FileProcessor, MessageProviderInterface {
 
 	protected static $messages = [];
 

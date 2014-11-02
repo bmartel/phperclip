@@ -1,9 +1,9 @@
-<?php namespace TippingCanoe\Phperclip\Repository;
+<?php namespace TippingCanoe\Phperclip\Contracts;
 
 use TippingCanoe\Phperclip\Model\Clippable;
 use TippingCanoe\Phperclip\Model\File as FileModel;
 
-interface FileInterface {
+interface File {
 
 	/**
 	 * Creates a new file object in the database.

@@ -3,13 +3,13 @@
 use TippingCanoe\Phperclip\Model\File as FileModel;
 use TippingCanoe\Phperclip\Model\Clippable;
 use TippingCanoe\Phperclip\Processes\ProcessManager;
-use TippingCanoe\Phperclip\Repository\File as FileRepository;
+use TippingCanoe\Phperclip\Contracts\File as FileRepository;
 use Symfony\Component\HttpFoundation\File\File;
 
 class Service {
 
 	/**
-	 * @var \TippingCanoe\Phperclip\Repository\File
+	 * @var \TippingCanoe\Phperclip\Contracts\File
 	 */
 	protected $fileRepository;
 

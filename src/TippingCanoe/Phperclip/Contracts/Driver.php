@@ -1,4 +1,4 @@
-<?php namespace TippingCanoe\Phperclip\Storage;
+<?php namespace TippingCanoe\Phperclip\Contracts;
 
 use TippingCanoe\Phperclip\Model\File as FileModel;
 use Symfony\Component\HttpFoundation\File\File;
