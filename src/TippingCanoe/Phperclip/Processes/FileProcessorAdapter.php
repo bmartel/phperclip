@@ -154,11 +154,11 @@ class FileProcessorAdapter implements FileProcessor, MessageProviderInterface {
 
 		$validation = Validator::make(compact('image'), ['image' => $options['validation']]);
 
-		if ($valid = $validation->fails()) {
+		if ($invalid = $validation->fails()) {
 
 			$this->addMessageResponse($validation, true);
 		}
 
-		return $valid;
+		return !$invalid;
 	}
 }
