@@ -5,7 +5,7 @@ use Illuminate\Database\Query\Builder;
 
 class File extends Model{
 
-	protected $table = 'phperclip_file';
+	protected $table = 'phperclip_files';
 
 	protected $fillable = [
 		'clippable_id',

@@ -13,7 +13,7 @@ class CreateFile extends Migration {
 	 */
 	public function up() {
 
-		Schema::create('phperclip_file', function (Blueprint $table) {
+		Schema::create('phperclip_files', function (Blueprint $table) {
 
 			$table
 				->increments('id')
@@ -56,7 +56,7 @@ class CreateFile extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		Schema::drop('phperclip_file');
+		Schema::drop('phperclip_files');
 	}
 
 }
