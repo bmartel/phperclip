@@ -135,4 +135,29 @@ class FileProcessorAdapter implements FileProcessor, MessageProviderInterface {
 
 		return !empty(static::$errors);
 	}
+
+	/**
+	 * Validates the image against the passed in criteria. Adds the error
+	 * messages to the session errors when validation fails.
+	 *
+	 * @param $image
+	 * @param array $options
+	 * @return bool
+	 */
+	protected function runValidation($image, array $options = []) {
+
+		// Need the validation rules from options array to exist.
+		if(array_key_exists('validation', $options)) {
+			return true;
+		}
+
+		$validation = Validator::make(compact('image'), ['image'=> $options['validation']]);
+
+		if($valid = $validation->fails()) {
+
+			$this->addMessageResponse($validation, true);
+		}
+
+		return $valid;
+	}
 }

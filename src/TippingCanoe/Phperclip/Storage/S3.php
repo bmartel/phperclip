@@ -1,6 +1,7 @@
 <?php namespace TippingCanoe\Phperclip\Storage;
 
 use Symfony\Component\HttpFoundation\File\File;
+use TippingCanoe\Phperclip\Contracts\Driver;
 use TippingCanoe\Phperclip\FileNameGenerator;
 use TippingCanoe\Phperclip\Model\File as FileModel;
 use TippingCanoe\Phperclip\MimeResolver;
