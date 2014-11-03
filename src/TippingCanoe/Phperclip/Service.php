@@ -175,9 +175,9 @@ class Service {
 		// and the current action scope.
 
 		if (!$file = $this->processManager->dispatch($file, 'beforeSave', $options)) {
-
+			return null;
 		}
-		
+
 		// Create the original file records
 		$newFile = $this->createFileRecord($file);
 		$this->saveFile($file, $newFile);
