@@ -9,13 +9,18 @@ class ImageProcessor extends FileProcessorAdapter {
 
 	protected $mimeTypes = ['image/png', 'image/jpeg'];
 
-	public function onSave(File $file, array $options = []) {
+	public function onBeforeSave(File $file, array $options = []) {
 
 		// Run validation on the image
 		if (!$this->runValidation($file, $options)) {
 			// If validation fails, stop processing immediately.
 			return false;
 		}
+
+		return $file;
+	}
+
+	public function onSave(File $file, array $options = []) {
 
 		// Run filters on the image
 		$this->runFilters($file, $options);

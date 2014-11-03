@@ -21,6 +21,20 @@ class FileProcessorAdapter implements FileProcessor, MessageProviderInterface {
 	}
 
 	/**
+	 * A method for doing pre-save operations such as validation. The file records will not be persisted,
+	 * and the actual file will not be permanently stored if a false-type is return from this method.
+	 *
+	 * @param File $file
+	 * @param array $options
+	 * @return mixed
+	 */
+	public function onBeforeSave(File $file, array $options = []) {
+
+		// TODO: Implement onBeforeSave() method.
+		return $file;
+	}
+
+	/**
 	 * A method to hook into the file save process. Allows intervention of the save operation by returning a false-type from
 	 * this method.
 	 *

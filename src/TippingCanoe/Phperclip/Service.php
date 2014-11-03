@@ -174,11 +174,22 @@ class Service {
 		// Determine if there are any registered processors which know of this file type
 		// and the current action scope.
 
+		if (!$file = $this->processManager->dispatch($file, 'beforeSave', $options)) {
+
+		}
+		
+		// Create the original file records
+		$newFile = $this->createFileRecord($file);
+		$this->saveFile($file, $newFile);
+
+		// Run any registered processors on the file
 		if (!$file = $this->processManager->dispatch($file, 'onSave', $options)) {
+
+			// If something fails inside the processors, clean up the file instances
+			$this->delete($newFile);
+			$newFile->forceDelete();
 			return null;
 		}
-
-		$newFile = $this->createFileRecord($file);
 
 		// Clippables are optional
 		if ($clippable) {
