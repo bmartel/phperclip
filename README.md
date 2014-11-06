@@ -51,14 +51,14 @@ Replace the filesystem driver configuration in the 'config.php' file with the Am
 Phperclip doesn't dictate what you want to do with your files. Instead it provides hooks into the service lifecycle methods via
 FileProcessors. FileProcessors allow you to specify the file types it will be responsible for, and the lifecycle methods: onBeforeSave, onSave, onDelete, and onMove allow you to perform any processing on the file you wish. 
 
-The following lifecycle methods will abort the current operation if a false type is returned from them.
+The following lifecycle methods will abort the current operation if a false type is returned from them. The normal run condition of the methods expect you to return the file which was passed in.
 
 * onBeforeSave: Executes before any files are persisted. Great for validation or other pre-save processing in which you do not want the file to be created on failure.
 * onSave: Executes immediately after the original, unmodified file is persisted. Allows for modifications to take place on the file.
 * onDelete: Executes whenever a file is about to be deleted. Great place to start cleaning up pesky file relationships, perform validation, or authorization on the user requesting the file deletion.
 * onMove: Executes whenever a file is going to move between slots. 
 
-An included ImageProcessor has been provided as both a showcase the power of the Processor components, as well as to provide flexibile and chainable Image filtering!
+An included ImageProcessor has been provided as both a showcase the power of the FileProcessor components, as well as to provide flexibile and chainable Image filtering!
 
 ### Image Filters
 Phperclip's filtering chains are a powerful feature that allow you to orchestrate arbitrary combinations of manipulations when saving or retrieving images.  When processing a chain, Phperclip does the following for each filter in the chain:
