@@ -28,7 +28,7 @@ To get Phperclip ready for use in your project, take the usual steps for setting
 Note: If you are using type-hinted dependency injection in your project, as a convenience Phperclip binds the type `TippingCanoe\Phperclip\Service` in the container.
 ```
 
-## Configuring
+## Configuration
 
 ### File Name Generation
 File names are generated using an injected class which implements `TippingCanoe\Phperclip\Contracts\FileNameGenerator`. By default, Phperclip uses its own implementation of the file name generator `TippingCanoe\Phperclip\FileNameGenerator`. It is set in the config as:
@@ -37,7 +37,7 @@ File names are generated using an injected class which implements `TippingCanoe\
 	'filename_generator' => 'TippingCanoe\Phperclip\FileNameGenerator'
 ```
 
-This implementation takes an md5 hash of the json result of the files options and attributes. If you wish to generate the filename using other means, create your own implementation, and include the class as the value of filename_generator in phperclips config.php file.
+This implementation takes an md5 hash of the json result of the files options and attributes. If you wish to generate the filename using other means, create your own implementation, and include the class as the value of filename_generator in Phperclip's `config.php` file.
 
 ### Storage
 If you open the copy of `config.php` that was created during setup, you will see it is already populated with configuration options for the most typical of setups.  The `TippingCanoe\Phperclip\Storage\Filesystem` driver is the most basic which simply stores image files in your site's public directory.
@@ -135,7 +135,7 @@ Saving images is done via the Phperclip service which can either be accessed via
 	/** @var \Symfony\Component\HttpFoundation\File\File $file */
 	/** @var \TippingCanoe\Phperclip\Model\Clippable $clippable */
 
-	$optiuons = [
+	$options = [
 		'attributes' => ['slot' => 1]
 	];
 
@@ -161,12 +161,13 @@ Most of the time you will have at least one of these three pieces of information
 	Phperclip::getPublicUriById($id, $options);
 ```
 
-You can also retrieve a collection of image, optionally by the clippable it belongs to, file mimetype, or slot.
+You can also retrieve a collection of files, optionally by the clippable it belongs to, file mimetype, or slot.
 Phperclip will return a collection of `TippingCanoe\Phperclip\Model\File`.
 
 ```
   Phperclip::getFilesFor($clippable, $mimetypes, $slot);
 ```
+
 When retrieving files from Phperclip, it's helpful to remember that anywhere you see "clippable" is optional and omitting it or providing null means _"global"_.  Similarly, "options" is also optional and omitting this value, providing null or an empty array will mean _"the original file"_.
 
 
