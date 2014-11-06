@@ -246,7 +246,7 @@ class Service {
 		$this->getDriver()->delete($fileModel, $options);
 
 		// If this is the original file also remove it from the database.
-		if (!array_key_exists('modifications', $options)) {
+		if (!array_key_exists($this->getDriver()->getModificationKey(), $options)) {
 			$fileModel->forceDelete();
 		}
 	}

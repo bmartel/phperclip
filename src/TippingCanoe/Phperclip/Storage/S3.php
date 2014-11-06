@@ -8,7 +8,7 @@ use TippingCanoe\Phperclip\MimeResolver;
 use Aws\S3\S3Client;
 use Aws\S3\Enum\CannedAcl;
 
-class S3 implements Driver {
+class S3 extends Base {
 
 
 	/**
@@ -21,10 +21,6 @@ class S3 implements Driver {
 	 */
 	protected $awsBucket;
 
-	protected $nameGenerator;
-
-	protected $mimeResolver;
-
 	/**
 	 * @param MimeResolver $mimeResolver
 	 * @param FileNameGenerator $nameGenerator
@@ -32,9 +28,8 @@ class S3 implements Driver {
 	 */
 
 	public function __construct(MimeResolver $mimeResolver, FileNameGenerator $nameGenerator, S3Client $s3Client) {
+		parent::__construct($mimeResolver, $nameGenerator);
 		$this->s3 = $s3Client;
-		$this->nameGenerator = $nameGenerator;
-		$this->mimeResolver = $mimeResolver;
 	}
 
 	/**

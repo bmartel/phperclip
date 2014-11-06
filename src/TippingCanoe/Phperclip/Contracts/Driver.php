@@ -61,4 +61,10 @@ interface Driver {
 	 */
 	public function tempOriginal(FileModel $fileModel);
 
+	/**
+	 * This is the name of the array key which to create file variations from its corresponding values.
+	 *
+	 * @return string
+	 */
+	public function getModificationKey();
 }

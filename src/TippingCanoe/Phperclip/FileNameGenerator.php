@@ -20,14 +20,21 @@ class FileNameGenerator implements Contracts\FileNameGenerator {
 		);
 	}
 
+	/**
+	 * Generates an MD5 hash of the file attributes and options.
+	 *
+	 * @param File $file
+	 * @param array $options
+	 * @return string
+	 */
 	protected function generateHash(File $file, array $options = []) {
 
 		// Add any modifications that may have run on the file.
-		$modifications = array_key_exists('modifications', $options) ? $options['modifications'] : [];
+		$modifications = array_key_exists($this->getFileModificationKey(), $options) ? $options[$this->getFileModificationKey()] : [];
 
 		$fileSignature = [
 			'id' => (string) $file->getKey(),
-			'modifications' => $modifications
+			$this->getFileModificationKey() => $modifications
 		];
 
 		return md5(json_encode($this->recursiveKeySort($fileSignature)));
@@ -50,4 +57,12 @@ class FileNameGenerator implements Contracts\FileNameGenerator {
 		return $array;
 	}
 
+	/**
+	 * This is the name of the array key which to create file variations from its corresponding values.
+	 *
+	 * @return string
+	 */
+	public function getFileModificationKey() {
+		return 'modifications';
+	}
 }

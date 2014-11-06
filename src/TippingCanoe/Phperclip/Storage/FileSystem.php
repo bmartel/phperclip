@@ -6,24 +6,13 @@ use Symfony\Component\HttpFoundation\File\File;
 use TippingCanoe\Phperclip\Contracts\FileNameGenerator;
 use TippingCanoe\Phperclip\MimeResolver;
 
-class Filesystem implements Driver {
+class Filesystem extends Base {
 
 	/** @var string */
 	protected $publicPrefix;
 
 	/** @var string */
 	protected $root;
-
-	protected $nameGenerator;
-
-	protected $mimeResolver;
-
-
-	public function __construct(MimeResolver $mimeResolver, FileNameGenerator $nameGenerator) {
-
-		$this->nameGenerator = $nameGenerator;
-		$this->mimeResolver = $mimeResolver;
-	}
 
 	/**
 	 * @param $path
