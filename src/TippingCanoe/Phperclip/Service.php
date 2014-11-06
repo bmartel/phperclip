@@ -197,8 +197,8 @@ class Service {
 		}
 
 		// Save a modified copy of the file
-		if(!$this->getDriver()->has($originalFile, $options)) {
-			$this->saveFile($file, $newFile, $options);
+		if(!$this->getDriver()->has($newFile, $options)) {
+			$this->saveFile($originalFile, $newFile, $options);
 		}
 
 		return $newFile;
