@@ -26,7 +26,7 @@ class FileNameGeneratorSpec extends ObjectBehavior
 		$fileModel->setAttribute('slot', 'profile');
 
 		$options = [
-			$this->getFileModificationKey() => [
+			$this->getFileModificationKey()->willReturn('modifications') => [
 				'shrink'=>'run shrink filter here',
 				'blur' => 'run blur filter here'
 			],
@@ -41,7 +41,7 @@ class FileNameGeneratorSpec extends ObjectBehavior
 			'validators' => [
 				'file_size' => 'run file size validator'
 			],
-			$this->getFileModificationKey() => [
+			$this->getFileModificationKey()->willReturn('modifications') => [
 				'blur' => 'run blur filter here',
 				'shrink'=>'run shrink filter here'
 			]
