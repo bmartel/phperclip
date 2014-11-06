@@ -174,7 +174,8 @@ class Service {
 		// Determine if there are any registered processors which know of this file type
 		// and the current action scope.
 
-		if (!$file = $this->processManager->dispatch($file, 'beforeSave', $options)) {
+		// Run any pre-save file processing, such as validation
+		if (!$file = $this->processManager->dispatch($file, 'onBeforeSave', $options)) {
 			return null;
 		}
 
@@ -185,9 +186,10 @@ class Service {
 		// Get a copy of the original file so we can manipulate it.
 		$originalFile = $this->getDriver()->tempOriginal($newFile);
 
-		// Run any registered processors on the file
+		// Run any file manipulation processors
 		if (!$originalFile = $this->processManager->dispatch($originalFile, 'onSave', $options)) {
 			// If something fails inside the processors, clean up the file instances
+			$this->delete($originalFile, $options);
 			return null;
 		}
 
