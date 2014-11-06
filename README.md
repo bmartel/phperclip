@@ -8,6 +8,7 @@ Features:
  * Configurable and customizable storage drivers
  * Generate URIs for files based on which storage driver is in use
  * Pluggable file processing through FileProcessors.
+ * Image Processing via an included FileProcessor.
  * A powerful and agnostic batch processor
 
 
