@@ -216,7 +216,9 @@ Creating a driver is as simple as extending the class `TippingCanoe\Phperclip\St
 ## Processors
 
 To make the magic happen with files, you will want to implement a dedicated FileProcessor to handle tasks which may need to happen during the lifecycle of the file service. You specify in the class which file mimetypes the processor will execute for, and provide the processing in the life cycle methods as appropriate for your own requirements.
+
 To begin, implement the interface `TippingCanoe\Phperclip\Contracts\FileProcessor`. For some free extras like a built in file validation and flash messaging, instead extend the class `TippingCanoe\Phperclip\Processes\FileProcessorAdapter`.
+
 The Image Filters are actually handled via an included FileProcessor `TippingCanoe\Phperclip\Processes\ImageProcessor`! You can use that as a guideline when creating your own FileProcessors.
 
 ## Image Filters
@@ -224,6 +226,7 @@ The Image Filters are actually handled via an included FileProcessor `TippingCan
 It's very easy to create your own image filters within your own project or packages. Just implement the interface `TippingCanoe\Phperclip\Contracts\Filter`.
 
 The only rule is that filter subclasses must perform their manipulations to the file provided without moving, renaming or deleting it - overwriting is fine.  The `run` method is not expected to return a value.
+
 See `TippingCanoe\Phperclip\Processes\Image\Resize` and `TippingCanoe\Phperclip\Processes\Image\FixRotation` as guidelines when creating your own image filters.
 
 
