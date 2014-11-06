@@ -1,15 +1,16 @@
 <?php namespace TippingCanoe\Phperclip\Repository;
 
+use TippingCanoe\Phperclip\Contracts\File as FileContract;
 use TippingCanoe\Phperclip\Model\Clippable;
 use TippingCanoe\Phperclip\Model\File as FileModel;
 
-class File implements FileInterface {
+class File implements FileContract {
 
 	/**
 	 * Creates a new File object in the database.
 	 *
 	 * @param $attributes
-	 * @return \TippingCanoe\Phperclip\Model\File
+	 * @return FileModel
 	 */
 	public function create($attributes) {
 
@@ -20,7 +21,7 @@ class File implements FileInterface {
 	 * Gets a File object by it's id.
 	 *
 	 * @param int $id
-	 * @return \TippingCanoe\Phperclip\Model\File
+	 * @return null|FileModel
 	 */
 	public function getById($id) {
 
@@ -30,7 +31,7 @@ class File implements FileInterface {
 	/**
 	 * @param $slot
 	 * @param Clippable $clippable
-	 * @return \TippingCanoe\Phperclip\Model\File
+	 * @return null|FileModel
 	 */
 	public function getBySlot($slot, Clippable $clippable = null) {
 

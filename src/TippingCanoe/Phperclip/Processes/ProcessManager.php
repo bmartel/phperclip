@@ -1,69 +1,125 @@
 <?php namespace TippingCanoe\Phperclip\Processes;
 
+use Illuminate\Session\SessionManager;
+use Illuminate\Support\MessageBag;
+use Illuminate\Support\ViewErrorBag;
 use Symfony\Component\HttpFoundation\File\File;
 use TippingCanoe\Phperclip\Model\File as FileModel;
 
 class ProcessManager {
 
 	/**
-	 * @var \TippingCanoe\Phperclip\Processes\FileProcessor[]
+	 * @var \TippingCanoe\Phperclip\Processes\FileProcessorAdapter[]
 	 */
 	protected $processors;
 
+	/**
+	 * @var \Illuminate\Session\Store
+	 */
+	private $session;
 
-	public function __construct(array $processors = null) {
+	public function __construct(SessionManager $session, array $processors = null) {
 
 		$this->processors = $processors;
+		$this->session = $session->driver();
 	}
 
 	/**
-	 * Dispatches the correct processors for the requesting mimetype
-	 *
-	 * @param $mimeType
-	 * @return \TippingCanoe\Phperclip\Processes\FileProcessor[]
+	 * @param \Symfony\Component\HttpFoundation\File\File|\TippingCanoe\Phperclip\Model\File $file
+	 * @param $action
+	 * @param array $options
+	 * @return bool
 	 */
-	public function dispatch($file, $action) {
+	public function dispatch($file, $action, array $options = []) {
 
-		$result = true;
+		// Do not process if the file is not an expected file type object.
+		if (!($this->validFileObject($file))) {
+			return null;
+		}
 
-		if (empty($this->processors) === false) {
-			foreach ($this->processors as $processor) {
+		$mimeType = $file->getMimeType();
 
-				$mimeType = null;
+		if ($processors = $this->getProcessorsFor($mimeType)) {
+			foreach ($processors as $processor) {
 
-				if ($file instanceof File || $file instanceof FileModel) {
-					$mimeType = $file->getMimeType();
+				// Call the processor method
+				if (method_exists($processor, $action)) {
+					$file = $processor->$action($file, $options);
 				}
 
-				if (!$mimeType) {
-					return false;
-				} // If the file passed in is not one of the expected types, bail.
-
-				if ($this->hasProcessFor($mimeType, $processor->registeredMimes())) {
-
-					// Call the processor method
-					if (method_exists($processor, $action)) {
-						$result &= $processor->$action($file);
-					}
-
-					if (!$result) {
-						return (bool) $result;
-					}
+				// If we return anything but the file here, stop the processing.
+				if (!($this->validFileObject($file))) {
+					$this->dispatchMessagesForFile();
+					return null;
 				}
 			}
 		}
 
-		return (bool) $result;
+		$this->dispatchMessagesForFile();
+
+		return $file;
 	}
 
 	/**
-	 * Check if there are processors available for the mimetypes request.
+	 * Retrieve all processors which are registered to act on the mimetype.
 	 *
 	 * @param $mimeType
+	 * @return null|array|\TippingCanoe\Phperclip\Processes\FileProcessorAdapter[]
+	 */
+	protected function getProcessorsFor($mimeType) {
+		if(empty($this->processors)) return null;
+
+		return array_filter($this->processors, function($processor) use($mimeType){
+			return in_array($mimeType, $processor->registeredMimes());
+		});
+	}
+
+	/**
+	 * @param $file
 	 * @return bool
 	 */
-	protected function hasProcessFor($mimeType, $processorMimes) {
+	private function validFileObject($file) {
 
-		return in_array($mimeType, $processorMimes);
+		return $file instanceof File || $file instanceof FileModel;
+	}
+
+	/**
+	 * Flashes the messages to the session.
+	 */
+	private function dispatchMessagesForFile() {
+
+		$processor = new FileProcessorAdapter();
+
+		if($processor->hasErrors()){
+			$this->addErrors($processor->errors());
+		}
+
+		if($processor->hasMessages()) {
+			$this->addMessages($processor->messages());
+		}
+	}
+
+	/**
+	 * Add flash error messages
+	 *
+	 * @param MessageBag $errors
+	 */
+	private function addErrors(MessageBag $errors) {
+		$this->session->flash(
+			'errors',
+			$this->session->get('errors', new ViewErrorBag)->put('file',$errors)
+		);
+	}
+
+	/**
+	 * Add flash messages
+	 *
+	 * @param MessageBag $messages
+	 */
+	private function addMessages(MessageBag $messages) {
+		$this->session->flash(
+			'messages',
+			$this->session->get('messages', new MessageBag)->merge('file',$messages)
+		);
 	}
 }

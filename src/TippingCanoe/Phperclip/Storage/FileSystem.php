@@ -1,27 +1,18 @@
 <?php namespace TippingCanoe\Phperclip\Storage;
 
+use TippingCanoe\Phperclip\Contracts\Driver;
 use TippingCanoe\Phperclip\Model\File as FileModel;
-use TippingCanoe\Phperclip\MimeResolver;
 use Symfony\Component\HttpFoundation\File\File;
+use TippingCanoe\Phperclip\Contracts\FileNameGenerator;
+use TippingCanoe\Phperclip\MimeResolver;
 
-class Filesystem implements Driver {
+class Filesystem extends Base {
 
 	/** @var string */
 	protected $publicPrefix;
 
 	/** @var string */
 	protected $root;
-
-	/**
-	 * @var \TippingCanoe\Phperclip\MimeResolver
-	 */
-	protected $mimeResolver;
-
-	public function __construct(MimeResolver $mimeResolver) {
-
-		$this->mimeResolver = $mimeResolver;
-	}
-
 
 	/**
 	 * @param $path
@@ -44,15 +35,16 @@ class Filesystem implements Driver {
 	//
 
 	/**
-	 * @param \TippingCanoe\Phperclip\Model\File $file
-	 * @param array $filters
+	 * @param FileModel $fileModel
+	 * @param array $options
+	 * @internal param FileModel $file
 	 * @return string
 	 */
-	public function getPublicUri(FileModel $fileModel) {
+	public function getPublicUri(FileModel $fileModel, array $options = []) {
 
 		return sprintf('%s/%s',
 			$this->getPublicPrefix(),
-			$this->generateFileName($fileModel)
+			$this->nameGenerator->fileName($fileModel, $options)
 		);
 	}
 
@@ -60,40 +52,51 @@ class Filesystem implements Driver {
 	 * Saves a File.
 	 *
 	 * Exceptions can provide extended error information and will abort the save process.
+	 *
 	 * @param File $file
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 */
-	public function saveFile(File $file, FileModel $fileModel) {
+	public function saveFile(File $file, FileModel $fileModel, array $options = []) {
 
-		$file->move($this->root, $this->generateFileName($fileModel));
+		$file->move($this->root, $this->nameGenerator->fileName($fileModel, $options));
 	}
 
 	/**
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 * @return bool
 	 */
-	public function has(FileModel $fileModel) {
+	public function has(FileModel $fileModel, array $options = []) {
 
-		return file_exists($this->generateFilePath($fileModel));
+		return file_exists($this->generateFilePath($fileModel, $options));
 	}
 
 	/**
 	 * Deletes a file.
 	 *
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 */
-	public function delete(FileModel $fileModel) {
+	public function delete(FileModel $fileModel, array $options = []) {
 
-		$pattern = sprintf('%s/%s-*.%s',
-			$this->root,
-			$fileModel->getKey(),
-			$this->mimeResolver->getExtension($fileModel->mime_type)
-		);
-
-		foreach (glob($pattern) as $filePath) {
-			unlink($filePath);
+		// If we're deleting a derived file.
+		if($options) {
+			unlink($this->generateFilePath($fileModel, $options));
 		}
 
+		// This is the original image, so delete any derivations that may exist as well.
+		else {
+			$pattern = sprintf('%s/%s-*.%s',
+				$this->root,
+				$fileModel->getKey(),
+				$this->mimeResolver->getExtension($fileModel->getMimeType())
+			);
+
+			foreach (glob($pattern) as $filePath) {
+				unlink($filePath);
+			}
+		}
 
 	}
 
@@ -105,19 +108,13 @@ class Filesystem implements Driver {
 	 */
 	public function tempOriginal(FileModel $fileModel) {
 
-		$originalPath = sprintf('%s/%s-%s.%s',
-			$this->root,
-			$fileModel->getKey(),
-			$this->generateHash($fileModel),
-			$this->mimeResolver->getExtension($fileModel->mime_type)
-		);
+		$originalPath = $this->generateFilePath($fileModel);
 
 		$tempOriginalPath = tempnam(sys_get_temp_dir(), null);
 
 		copy($originalPath, $tempOriginalPath);
 
 		return new File($tempOriginalPath);
-
 	}
 
 	//
@@ -133,61 +130,13 @@ class Filesystem implements Driver {
 	}
 
 	/**
-	 * Generates a hash based on a file key
-	 *
-	 * @param File $fileModel
-	 * @return string
-	 */
-	protected function generateHash(FileModel $fileModel) {
-
-		$state = [
-			'id' => (string) $fileModel->getKey()
-		];
-
-		return md5(json_encode($state));
-
-	}
-
-	/**
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 * @return string
 	 */
-	protected function generateFileName(FileModel $fileModel) {
+	protected function generateFilePath(FileModel $fileModel, array $options = []) {
 
-		return sprintf('%s-%s.%s',
-			$fileModel->getKey(),
-			$this->generateHash($fileModel),
-			$this->mimeResolver->getExtension($fileModel->mime_type)
-		);
-	}
-
-	/**
-	 * @param FileModel $fileModel
-	 * @return string
-	 */
-	protected function generateFilePath(FileModel $fileModel) {
-
-		return sprintf('%s/%s', $this->root, $this->generateFileName($fileModel));
-	}
-
-	/**
-	 * Utility method to ensure that key signatures always appear in the same order.
-	 *
-	 * @param array $array
-	 * @return array
-	 */
-	protected function recursiveKeySort(array $array) {
-
-		ksort($array);
-
-		foreach ($array as $key => $value) {
-			if (is_array($value)) {
-				$array[$key] = $this->recursiveKeySort($value);
-			}
-		}
-
-		return $array;
-
+		return sprintf('%s/%s', $this->root, $this->nameGenerator->fileName($fileModel, $options));
 	}
 
 }

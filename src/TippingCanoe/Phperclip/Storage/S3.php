@@ -1,12 +1,14 @@
 <?php namespace TippingCanoe\Phperclip\Storage;
 
 use Symfony\Component\HttpFoundation\File\File;
+use TippingCanoe\Phperclip\Contracts\Driver;
+use TippingCanoe\Phperclip\FileNameGenerator;
 use TippingCanoe\Phperclip\Model\File as FileModel;
 use TippingCanoe\Phperclip\MimeResolver;
 use Aws\S3\S3Client;
 use Aws\S3\Enum\CannedAcl;
 
-class S3 implements Driver {
+class S3 extends Base {
 
 
 	/**
@@ -20,20 +22,14 @@ class S3 implements Driver {
 	protected $awsBucket;
 
 	/**
-	 * @var \TippingCanoe\Phperclip\MimeResolver
-	 */
-	protected $mimeResolver;
-
-	/**
+	 * @param MimeResolver $mimeResolver
+	 * @param FileNameGenerator $nameGenerator
 	 * @param S3Client $s3Client
 	 */
-	public function __construct(
-		S3Client $s3Client,
-		MimeResolver $mimeResolver
-	) {
 
+	public function __construct(MimeResolver $mimeResolver, FileNameGenerator $nameGenerator, S3Client $s3Client) {
+		parent::__construct($mimeResolver, $nameGenerator);
 		$this->s3 = $s3Client;
-		$this->mimeResolver = $mimeResolver;
 	}
 
 	/**
@@ -48,48 +44,48 @@ class S3 implements Driver {
 	 * Saves a file.
 	 *
 	 * Exceptions can provide extended error information and will abort the save process.
+	 *
 	 * @param File $file
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 */
-	public function saveFile(File $file, FileModel $fileModel) {
+	public function saveFile(File $file, FileModel $fileModel, array $options = []) {
 
 		// Upload a file.
 		$this->s3->putObject(array(
 			'Bucket' => $this->awsBucket,
-			'Key' => $this->generateFileName($fileModel),
+			'Key' => $this->nameGenerator->fileName($fileModel, $options),
 			'SourceFile' => $file->getRealPath(),
 			'ACL' => CannedAcl::PRIVATE_ACCESS,
 		));
-
 	}
 
 	/**
 	 * Returns the public URI for a file.
 	 *
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 * @return string
 	 */
-	public function getPublicUri(FileModel $fileModel) {
+	public function getPublicUri(FileModel $fileModel, array $options = []) {
 
 		// Get a timed url
-		return $this->s3->getObjectUrl($this->awsBucket, $this->generateFileName($fileModel), '+10 minutes');
-
+		return $this->s3->getObjectUrl($this->awsBucket, $this->nameGenerator->fileName($fileModel, $options), '+10 minutes');
 	}
-
 
 	/**
 	 * Asks the driver if it has a particular file.
 	 *
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 * @return bool
 	 */
-	public function has(FileModel $fileModel) {
+	public function has(FileModel $fileModel, array $options = []) {
 
 		// Check if file exists
 		return $this->s3->doesObjectExist(
 			$this->awsBucket,
-			$this->generateFileName($fileModel));
-
+			$this->nameGenerator->fileName($fileModel, $options));
 	}
 
 	/**
@@ -98,15 +94,15 @@ class S3 implements Driver {
 	 * Deleting must at least ensure that afterwards, any call to has() returns false.
 	 *
 	 * @param FileModel $fileModel
+	 * @param array $options
 	 */
-	public function delete(FileModel $fileModel) {
+	public function delete(FileModel $fileModel, array $options = []) {
 
 		// Delete a file.
 		$this->s3->deleteObject(array(
 			'Bucket' => $this->awsBucket,
-			'Key' => $this->generateFileName($fileModel),
+			'Key' => $this->nameGenerator->fileName($fileModel, $options),
 		));
-
 	}
 
 	/**
@@ -120,11 +116,7 @@ class S3 implements Driver {
 		// Recreate original filename
 		$tempOriginalPath = tempnam(sys_get_temp_dir(), null);
 
-		$originalPath = sprintf('%s-%s.%s',
-			$fileModel->getKey(),
-			$this->generateHash($fileModel),
-			$this->mimeResolver->getExtension($fileModel->mime_type)
-		);
+		$originalPath = $this->nameGenerator->fileName($fileModel);
 
 		// Download file
 		$this->s3->getObject(array(
@@ -134,60 +126,6 @@ class S3 implements Driver {
 		));
 
 		return new File($tempOriginalPath);
-
 	}
 
-	//
-	// Utility Methods
-	//
-
-	/**
-	 * @param FileModel $fileModel
-	 * @return string
-	 */
-	protected function generateFileName(FileModel $fileModel) {
-
-		return sprintf('%s-%s.%s',
-			$fileModel->getKey(),
-			$this->generateHash($fileModel),
-			$this->mimeResolver->getExtension($fileModel->mime_type)
-		);
-
-	}
-
-	/**
-	 * Generates a hash based on a file key.
-	 *
-	 * @param FileModel $fileModel
-	 * @return string
-	 */
-	protected function generateHash(FileModel $fileModel) {
-
-		$state = [
-			'id' => (string) $fileModel->getKey()
-		];
-
-		return md5(json_encode($state));
-
-	}
-
-	/**
-	 * Utility method to ensure that key signatures always appear in the same order.
-	 *
-	 * @param array $array
-	 * @return array
-	 */
-	protected function recursiveKeySort(array $array) {
-
-		ksort($array);
-
-		foreach ($array as $key => $value) {
-			if (is_array($value)) {
-				$array[$key] = $this->recursiveKeySort($value);
-			}
-		}
-
-		return $array;
-
-	}
 } 

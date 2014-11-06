@@ -5,7 +5,7 @@ use Illuminate\Database\Query\Builder;
 
 class File extends Model{
 
-	protected $table = 'phperclip_file';
+	protected $table = 'phperclip_files';
 
 	protected $fillable = [
 		'clippable_id',
@@ -31,7 +31,7 @@ class File extends Model{
 	}
 
 	/**
-	 * @param \Illuminate\Database\Eloquent\Builder $query
+	 * @param \Illuminate\Database\Eloquent\Builder|Builder $query
 	 * @param string $type
 	 * @param int $id
 	 * @return \Illuminate\Database\Eloquent\Builder
@@ -44,7 +44,7 @@ class File extends Model{
 	}
 
 	/**
-	 * @param \Illuminate\Database\Eloquent\Builder $query
+	 * @param \Illuminate\Database\Eloquent\Builder|Builder $query
 	 * @param string $slot
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
@@ -53,7 +53,7 @@ class File extends Model{
 	}
 
 	/**
-	 * @param \Illuminate\Database\Eloquent\Builder $query
+	 * @param \Illuminate\Database\Eloquent\Builder|Builder $query
 	 * @param string $slot
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
@@ -112,5 +112,4 @@ class File extends Model{
 	public function scopeInIntegerSlot(Builder $query) {
 		return $query->whereRaw(sprintf('%s.slot REGEXP \'^[[:digit:]]+$\'', $query->getQuery()->from));
 	}
-
-} 
+}

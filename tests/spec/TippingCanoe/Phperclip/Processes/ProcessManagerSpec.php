@@ -2,57 +2,62 @@
 
 namespace spec\TippingCanoe\Phperclip\Processes;
 
+use Illuminate\Session\SessionManager;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\HttpFoundation\File\File;
-use TippingCanoe\Phperclip\Processes\FileProcessor;
+use TippingCanoe\Phperclip\Model\File as FileModel;
+use TippingCanoe\Phperclip\Processes\FileProcessorAdapter;
 
-class ProcessManagerSpec extends ObjectBehavior
-{
-	function let()
-	{
+class ProcessManagerSpec extends ObjectBehavior {
+
+	function let(SessionManager $session) {
+
 		$processors = [];
 
-		$processors[]= new MockProcessor();
+		$processors[] = new MockProcessorAdapter();
 
-		$this->beConstructedWith($processors);
+		$this->beConstructedWith($session, $processors);
 	}
 
-    function it_is_initializable()
-    {
-        $this->shouldHaveType('TippingCanoe\Phperclip\Processes\ProcessManager');
-    }
+	function it_is_initializable() {
 
-	function it_can_dispatch_processors_for_file_actions(File $file)
-	{
+		$this->shouldHaveType('TippingCanoe\Phperclip\Processes\ProcessManager');
+	}
+
+	function it_can_dispatch_processors_for_file_actions(File $file) {
 
 		$file->getMimeType()->willReturn('image/png');
 
-		$this->dispatch($file, 'onSave')->shouldReturn(false);
+		$this->dispatch($file, 'onSave')->shouldReturn(null);
 
 	}
 
-	function it_can_modify_files_through_processors(\TippingCanoe\Phperclip\Model\File $fileModel) {
+	function it_can_modify_files_through_processors(FileModel $fileModel) {
+
 		$fileModel->getMimeType()->willReturn('text/plain');
 
-		$fileModel->setAttribute('mime_type' , 'image/jpeg')->shouldBeCalled();
+		$fileModel->setAttribute('mime_type', 'image/jpeg')->shouldBeCalled();
 
-		$this->dispatch($fileModel, 'onDelete')->shouldReturn(true);
+		$this->dispatch($fileModel, 'onDelete')->shouldReturn($fileModel);
 
 	}
 }
 
-class MockProcessor extends FileProcessor{
+class MockProcessorAdapter extends FileProcessorAdapter {
+
 	protected $mimeTypes = ['image/png', 'text/plain'];
 
-	public function onSave(File &$file) {
+	public function onSave(File $file, array $options = []) {
+
 		return false;
 	}
 
-	public function onDelete(\TippingCanoe\Phperclip\Model\File &$fileModel) {
-		$fileModel->setAttribute('mime_type' , 'image/jpeg');
-		return true;
-	}
+	public function onDelete(FileModel $fileModel, array $options = []) {
 
+		$fileModel->setAttribute('mime_type', 'image/jpeg');
+
+		return $fileModel;
+	}
 
 }
