@@ -103,16 +103,16 @@ class Service {
 	}
 
 	/**
-	 * Get the files attached to a model
+	 * Get all the files by mimetype or slot, attached or unattached to a model
 	 *
-	 * @param Clippable $clippable
+	 * @param null|Clippable $clippable
 	 * @param null|string|array $mimeTypes
 	 * @param null|string|int|array $slot
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
-	public function getFilesFor(Clippable $clippable, $mimeTypes = null, $slot = null) {
+	public function getFilesFor(Clippable $clippable = null, $mimeTypes = null, $slot = null) {
 
-		$query = $clippable->clippedFiles();
+		$query = ($clippable) ? $clippable->clippedFiles() : FileModel::query();
 
 		// Filter by slot(s)
 		if($slot) {
