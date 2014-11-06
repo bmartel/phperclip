@@ -39,11 +39,11 @@ class ImageProcessor extends FileProcessorAdapter {
 	private function runFilters(File $file, array $options = []) {
 
 		// Need the filters from the options array to exist.
-		if (empty($options) || !array_key_exists('filters', $options) || !is_array($options['filters'])) {
+		if (empty($options) || !array_key_exists('modifications', $options) || !is_array($options['modifications'])) {
 			return null;
 		}
 
-		foreach ($options['filters'] as $filter) {
+		foreach ($options['modifications'] as $filter) {
 
 			/**
 			 * @var \TippingCanoe\Phperclip\Contracts\Filter $abstractFilterClass

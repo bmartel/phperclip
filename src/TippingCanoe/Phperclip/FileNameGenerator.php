@@ -22,12 +22,12 @@ class FileNameGenerator implements Contracts\FileNameGenerator {
 
 	protected function generateHash(File $file, array $options = []) {
 
-		// Add any modification filters that may have run on the file.
-		$filters = array_key_exists('filters', $options) ? $options['filters'] : [];
+		// Add any modifications that may have run on the file.
+		$modifications = array_key_exists('modifications', $options) ? $options['modifications'] : [];
 
 		$fileSignature = [
 			'id' => (string) $file->getKey(),
-			'filters' => $filters
+			'modifications' => $modifications
 		];
 
 		return md5(json_encode($this->recursiveKeySort($fileSignature)));

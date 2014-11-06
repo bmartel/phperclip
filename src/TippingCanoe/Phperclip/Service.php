@@ -178,25 +178,28 @@ class Service {
 			return null;
 		}
 
-		// Create the original file records
+		// Create the original file record
 		$newFile = $this->createFileRecord($file);
 		$this->saveFile($file, $newFile);
 
-		// Run any registered processors on the file
-		if (!$file = $this->processManager->dispatch($file, 'onSave', $options)) {
+		// Get a copy of the original file so we can manipulate it.
+		$originalFile = $this->getDriver()->tempOriginal($newFile);
 
+		// Run any registered processors on the file
+		if (!$originalFile = $this->processManager->dispatch($originalFile, 'onSave', $options)) {
 			// If something fails inside the processors, clean up the file instances
-			$this->delete($newFile);
-			$newFile->forceDelete();
 			return null;
 		}
 
-		// Clippables are optional
+		// Optionally attach the file to a model
 		if ($clippable) {
 			$clippable->clippedFiles()->save($newFile);
 		}
 
-		$this->saveFile($file, $newFile, $options);
+		// Save a modified copy of the file
+		if(!$this->getDriver()->has($originalFile, $options)) {
+			$this->saveFile($file, $newFile, $options);
+		}
 
 		return $newFile;
 	}
@@ -240,8 +243,8 @@ class Service {
 		// Perform the delete on the actual file
 		$this->getDriver()->delete($fileModel, $options);
 
-		// If this is the original image also remove it from the database.
-		if (!array_key_exists('filters', $options)) {
+		// If this is the original file also remove it from the database.
+		if (!array_key_exists('modifications', $options)) {
 			$fileModel->forceDelete();
 		}
 	}
@@ -366,7 +369,7 @@ class Service {
 	 * Gets the current or specified driver.
 	 *
 	 * @param null $abstract
-	 * @return \TippingCanoe\Phperclip\Storage\Driver
+	 * @return \TippingCanoe\Phperclip\Contracts\Driver
 	 */
 	protected function getDriver($abstract = null) {
 
@@ -388,10 +391,8 @@ class Service {
 			'mime_type' => $file->getMimeType()
 		];
 
-		if (array_key_exists('attributes', $options)) {
-			$newAttributes = $options['attributes'];
-			$newAttributes = is_array($newAttributes) ? $newAttributes : [$newAttributes];
-			$attributes = array_merge($attributes, $newAttributes);
+		if (array_key_exists('attributes', $options) && is_array($options['attributes'])) {
+			$attributes = array_merge($attributes, $options['attributes']);
 		}
 
 		return $this->fileRepository->create($attributes);
@@ -408,5 +409,4 @@ class Service {
 
 		$this->getDriver()->saveFile($file, $fileModel, $options);
 	}
-
 }
