@@ -181,27 +181,15 @@ class Service {
 
 		// Create the original file record
 		$newFile = $this->createFileRecord($file);
-		$this->saveFile($file, $newFile);
-
-		// Get a copy of the original file so we can manipulate it.
-		$originalFile = $this->getDriver()->tempOriginal($newFile);
-
-		// Run any file manipulation processors
-		if (!$originalFile = $this->processManager->dispatch($originalFile, 'onSave', $options)) {
-			// If something fails inside the processors, clean up the file instances
-			$this->delete($originalFile, $options);
-			return null;
-		}
+		$this->saveOriginalFile($file, $newFile);
 
 		// Optionally attach the file to a model
 		if ($clippable) {
 			$clippable->clippedFiles()->save($newFile);
 		}
 
-		// Save a modified copy of the file
-		if(!$this->getDriver()->has($newFile, $options)) {
-			$this->saveFile($originalFile, $newFile, $options);
-		}
+		// Save a modified copy of the original file
+		$this->saveFile($this->getDriver()->tempOriginal($newFile), $newFile, $options);
 
 		return $newFile;
 	}
@@ -401,6 +389,16 @@ class Service {
 	}
 
 	/**
+	 * Saves an original unmodified version of the file.
+	 *
+	 * @param File $file
+	 * @param FileModel $fileModel
+	 */
+	protected function saveOriginalFile(File $file, FileModel $fileModel) {
+		$this->getDriver()->saveFile($file, $fileModel);
+	}
+
+	/**
 	 * Pass a file save into the current Driver.
 	 *
 	 * @param File $file
@@ -408,6 +406,13 @@ class Service {
 	 * @param array $options
 	 */
 	protected function saveFile(File $file, FileModel $fileModel, array $options = []) {
+
+		// Run any file manipulation processors
+		if (!$file = $this->processManager->dispatch($file, 'onSave', $options)) {
+			// If something fails inside the processors, clean up the file instances
+			$this->delete($file, $options);
+			return null;
+		}
 
 		$this->getDriver()->saveFile($file, $fileModel, $options);
 	}
