@@ -248,4 +248,5 @@ If you encounter any issues, find a bug or have any questions, feel free to open
 
 ### Credits
 Brandon Martel - Maintainer
+
 Alex Trauzzi - created original implementation of tippingcanoe/imager, of which this package based on.
