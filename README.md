@@ -30,6 +30,15 @@ Note: If you are using type-hinted dependency injection in your project, as a co
 
 ## Configuring
 
+### File Name Generation
+File names are generated using an injected class which implements `TippingCanoe\Phperclip\Contracts\FileNameGenerator`. By default, Phperclip uses its own implementation of the file name generator `TippingCanoe\Phperclip\FileNameGenerator`. It is set in the config as:
+
+```
+	'filename_generator' => 'TippingCanoe\Phperclip\FileNameGenerator'
+```
+
+This implementation takes an md5 hash of the json result of the files options and attributes. If you wish to generate the filename using other means, create your own implementation, and include the class as the value of filename_generator in phperclips config.php file.
+
 ### Storage
 If you open the copy of `config.php` that was created during setup, you will see it is already populated with configuration options for the most typical of setups.  The `TippingCanoe\Phperclip\Storage\Filesystem` driver is the most basic which simply stores image files in your site's public directory.
 
@@ -231,7 +240,7 @@ The only rule is that filter subclasses must perform their manipulations to the 
 See `TippingCanoe\Phperclip\Processes\Image\Resize` and `TippingCanoe\Phperclip\Processes\Image\FixRotation` as guidelines when creating your own image filters.
 
 
-## Meta
+## Issues
 
 If you encounter any issues, find a bug or have any questions, feel free to open a ticket in the issue tracker.
 
