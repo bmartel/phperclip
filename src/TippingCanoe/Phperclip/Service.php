@@ -180,7 +180,7 @@ class Service {
 		}
 
 		// Create the original file record
-		$newFile = $this->createFileRecord($file);
+		$newFile = $this->createFileRecord($file, $options);
 		$this->saveOriginalFile($file, $newFile);
 
 		// Optionally attach the file to a model
@@ -283,11 +283,11 @@ class Service {
 			elseif (filter_input($operation, FILTER_VALIDATE_URL)) {
 
 				try {
-					$this->saveFromUri($operation, $clippable, ['slot' => $slot]);
+					$this->saveFromUri($operation, $clippable, ['attributes' => ['slot' => $slot]]);
 				} catch (\Exception $ex) {
 					// Displace whatever is in the slot.
 					$this->moveToSlot($this->getBySlot($slot), null);
-					$this->saveFromUri($operation, $clippable, ['slot' => $slot]);
+					$this->saveFromUri($operation, $clippable, ['attributes' => ['slot' => $slot]]);
 				}
 
 			}
@@ -297,11 +297,11 @@ class Service {
 		// Handle file uploads.
 		foreach ($files as $slot => $file) {
 			try {
-				$this->saveFromFile($file, $clippable, ['slot' => $slot]);
+				$this->saveFromFile($file, $clippable, ['attributes' => ['slot' => $slot]]);
 			} catch (\Exception $ex) {
 				// Displace whatever is in the slot.
 				$this->moveToSlot($this->getBySlot($slot), null);
-				$this->saveFromFile($file, $clippable, ['slot' => $slot]);
+				$this->saveFromFile($file, $clippable, ['attributes' => ['slot' => $slot]]);
 			}
 		}
 
