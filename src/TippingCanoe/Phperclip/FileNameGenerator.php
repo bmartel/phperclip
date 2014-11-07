@@ -29,13 +29,14 @@ class FileNameGenerator implements Contracts\FileNameGenerator {
 	 */
 	protected function generateHash(File $file, array $options = []) {
 
-		// Add any modifications that may have run on the file.
-		$modifications = array_key_exists($this->getFileModificationKey(), $options) ? $options[$this->getFileModificationKey()] : [];
-
 		$fileSignature = [
 			'id' => (string) $file->getKey(),
-			$this->getFileModificationKey() => $modifications
 		];
+
+		// Add any modifications that may have run on the file.
+		if(array_key_exists($this->getFileModificationKey(), $options)) {
+			$fileSignature[$this->getFileModificationKey()] = $options[$this->getFileModificationKey()];
+		}
 
 		return md5(json_encode($this->recursiveKeySort($fileSignature)));
 	}
