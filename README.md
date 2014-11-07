@@ -119,7 +119,7 @@ If you're unsure as to where you should store your filter profiles, it's suggest
 
 Depending on the nature of your implementation, the means by which you will receive files will vary.  Phperclip makes no assumptions about your request lifecycle (or that there's even a request at all!) and only concerns itself with recieving instances of `Symfony\Component\HttpFoundation\File\File`.
 
-The two optional, secondary pieces of information that Phperclip makes use of are `Clippable` to scope to a specific model and an options which allow for processing to take place on the file.
+The two optional, secondary pieces of information that Phperclip makes use of are `Clippable` to scope to a specific model and an options array which allow for processing to take place on the file.
 
 
 ### Trait
@@ -129,7 +129,7 @@ If you plan on attaching files to a model (User, Item, ImageGallery), that model
 
 ### Saving
 
-Saving images is done via the Phperclip service which can either be accessed via the facade or through dependency injection.
+Saving files is done via the Phperclip service which can either be accessed via the facade or through dependency injection.
 
 ```
 	/** @var \Symfony\Component\HttpFoundation\File\File $file */
@@ -143,20 +143,20 @@ Saving images is done via the Phperclip service which can either be accessed via
 	$file = Phperclip::saveFromFile($file, $clippable, $options);
 ```
 
-Phperclip will return an instance of `TippingCanoe\Phperclip\Model\File` upon a successful save.  If you supplied one, the image record will be associated with a clippable.  Any additional attributes will be passed through to the save as well via the attributes key of the options array.
+Phperclip will return an instance of `TippingCanoe\Phperclip\Model\File` upon a successful save.  If you supplied one, the file record will be associated with a clippable.  Any additional attributes will be passed through to the save as well via the attributes key of the options array.
 
 ### Retrieval
 
-When retrieving an individual image, you will need a way to identify it:
+When retrieving an individual file, you will need a way to identify it:
 
  * The file's `id`
  * The file's clippable and a slot
  * A file's `clippedFiles()` relation
 
-Most of the time you will have at least one of these three pieces of information which will then allow you to obtain a URI to the physical file of the image.
+Most of the time you will have at least one of these three pieces of information which will then allow you to obtain a URI to the physical file.
 
 ```
-	Phperclip::getPublicUri($image, $options);
+	Phperclip::getPublicUri($file, $options);
 	Phperclip::getPublicUriBySlot($slot, $clippable, $options);
 	Phperclip::getPublicUriById($id, $options);
 ```
@@ -173,7 +173,7 @@ When retrieving files from Phperclip, it's helpful to remember that anywhere you
 
 ### Slots
 
-Phperclip features a concept known as slots which at it's very core is just a string value.  Slots are used to order and/or key files by their clippable.  There are helper scopes on the `TippingCanoe\Phperclip\Model\File` class to help with retrieving images based on their slot values.
+Phperclip features a concept known as slots which at it's very core is just a string value.  Slots are used to order and/or key files by their clippable.  There are helper scopes on the `TippingCanoe\Phperclip\Model\File` class to help with retrieving files based on their slot values.
 
 ```
 Note: When storing files without a clippable (globally), keep in mind that they are all sharing the same slot scope and cannot have duplicates.
