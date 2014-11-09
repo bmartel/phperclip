@@ -20,10 +20,10 @@
 		'TippingCanoe\Phperclip\Storage\Filesystem' => [
 
 			// Directory that Phperclip can manage everything under.
-			'root' => public_path() . '/files/uploaded',
+			'root' => public_path() . '/uploads',
 
 			// Public, client-accessible prefix pointing to wherever the root is hosted, including scheme.
-			'public_prefix' => sprintf('%s/files/uploaded', Request::getSchemeAndHttpHost()),
+			'public_prefix' => sprintf('%s/uploads', Request::getSchemeAndHttpHost()),
 
 		],
 
