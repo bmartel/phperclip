@@ -13,17 +13,14 @@
 	"require": {
 		"php": ">=5.4.0",
 		"aws/aws-sdk-php": "2.5.*",
-		"illuminate/http": "4.2.*",
-        "illuminate/database": "4.2.*",
-        "illuminate/config": "4.2.*",
+		"illuminate/http": "5.0.*",
+        "illuminate/database": "5.0.*",
+        "illuminate/config": "5.0.*",
 		"intervention/image": "2.0.*"
 	},
 	"require-dev" : {
 		"phpspec/phpspec": "2.0.*@dev",
 		"mockery/mockery": "0.9.*@dev"
-	},
-	"suggest": {
-		"cviebrock/image-validator": "Extra Laravel validation rules for dealing with images."
 	},
 	"autoload": {
 		"classmap": [
