@@ -11,7 +11,7 @@ use TippingCanoe\Phperclip\Processes\FileProcessorAdapter;
 
 class ProcessManagerSpec extends ObjectBehavior {
 
-	function let(SessionManager $session) {
+	public function let(SessionManager $session) {
 
 		$processors = [];
 
@@ -20,12 +20,12 @@ class ProcessManagerSpec extends ObjectBehavior {
 		$this->beConstructedWith($session, $processors);
 	}
 
-	function it_is_initializable() {
+	public function it_is_initializable() {
 
 		$this->shouldHaveType('TippingCanoe\Phperclip\Processes\ProcessManager');
 	}
 
-	function it_can_dispatch_processors_for_file_actions(File $file) {
+	public function it_can_dispatch_processors_for_file_actions(File $file) {
 
 		$file->getMimeType()->willReturn('image/png');
 
@@ -33,7 +33,7 @@ class ProcessManagerSpec extends ObjectBehavior {
 
 	}
 
-	function it_can_modify_files_through_processors(FileModel $fileModel) {
+	public function it_can_modify_files_through_processors(FileModel $fileModel) {
 
 		$fileModel->getMimeType()->willReturn('text/plain');
 
