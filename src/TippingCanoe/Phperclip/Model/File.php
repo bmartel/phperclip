@@ -1,7 +1,7 @@
 <?php namespace TippingCanoe\Phperclip\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 
 class File extends Model{
 
