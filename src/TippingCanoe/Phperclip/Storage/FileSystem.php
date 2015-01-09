@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use TippingCanoe\Phperclip\Contracts\FileNameGenerator;
 use TippingCanoe\Phperclip\MimeResolver;
 
-class FileSystem extends Base {
+class Filesystem extends Base {
 
 	/** @var string */
 	protected $publicPrefix;
