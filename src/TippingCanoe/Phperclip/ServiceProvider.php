@@ -39,7 +39,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 		/** @var \Illuminate\Config\Repository $config */
 		$config = $this->app->make('config');
 
-		$this->app->bind('TippingCanoe\Phperclip\Contracts\File', 'TippingCanoe\Phperclip\Repository\File');
+		$this->app->bind('TippingCanoe\Phperclip\Contracts\FileRepository', 'TippingCanoe\Phperclip\Repository\FileRepository');
 
 		$this->app->bindShared('TippingCanoe\Phperclip\Service', function ($app) use ($config) {
 
@@ -54,7 +54,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
 			// Register the Phperclip service
 			return new PhperclipService(
-				$app->make('TippingCanoe\Phperclip\Contracts\File'),
+				$app->make('TippingCanoe\Phperclip\Contracts\FileRepository'),
 				$app->make('TippingCanoe\Phperclip\Processes\ProcessManager'),
 				$storageDrivers
 			);

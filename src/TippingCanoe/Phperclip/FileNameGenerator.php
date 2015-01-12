@@ -1,6 +1,6 @@
 <?php namespace TippingCanoe\Phperclip;
 
-use TippingCanoe\Phperclip\Model\File;
+use TippingCanoe\Phperclip\Model\File as FileModel;
 
 class FileNameGenerator implements Contracts\FileNameGenerator {
 
@@ -11,7 +11,7 @@ class FileNameGenerator implements Contracts\FileNameGenerator {
 		$this->mimeResolver = $mimeResolver;
 	}
 
-	public function fileName(File $file, array $options = []) {
+	public function fileName(FileModel $file, array $options = []) {
 
 		return sprintf('%d-%s.%s',
 			$file->getKey(),
@@ -23,11 +23,11 @@ class FileNameGenerator implements Contracts\FileNameGenerator {
 	/**
 	 * Generates an MD5 hash of the file attributes and options.
 	 *
-	 * @param File $file
+	 * @param FileModel $file
 	 * @param array $options
 	 * @return string
 	 */
-	protected function generateHash(File $file, array $options = []) {
+	protected function generateHash(FileModel $file, array $options = []) {
 
 		$fileSignature = [
 			'id' => (string) $file->getKey(),

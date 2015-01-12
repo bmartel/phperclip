@@ -3,7 +3,7 @@
 use TippingCanoe\Phperclip\Model\Clippable;
 use TippingCanoe\Phperclip\Model\File as FileModel;
 
-interface File {
+interface FileRepository {
 
 	/**
 	 * Creates a new file object in the database.

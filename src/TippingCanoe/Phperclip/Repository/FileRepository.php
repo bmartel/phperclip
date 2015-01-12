@@ -1,10 +1,10 @@
 <?php namespace TippingCanoe\Phperclip\Repository;
 
-use TippingCanoe\Phperclip\Contracts\File as FileContract;
+use TippingCanoe\Phperclip\Contracts\FileRepository as FileRepositoryContract;
 use TippingCanoe\Phperclip\Model\Clippable;
 use TippingCanoe\Phperclip\Model\File as FileModel;
 
-class File implements FileContract {
+class FileRepository implements FileRepositoryContract {
 
 	/**
 	 * Creates a new File object in the database.
