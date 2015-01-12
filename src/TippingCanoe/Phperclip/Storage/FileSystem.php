@@ -1,10 +1,7 @@
 <?php namespace TippingCanoe\Phperclip\Storage;
 
-use TippingCanoe\Phperclip\Contracts\Driver;
 use TippingCanoe\Phperclip\Model\File as FileModel;
 use Symfony\Component\HttpFoundation\File\File;
-use TippingCanoe\Phperclip\Contracts\FileNameGenerator;
-use TippingCanoe\Phperclip\MimeResolver;
 
 class Filesystem extends Base {
 
@@ -77,11 +74,9 @@ class Filesystem extends Base {
 	public function delete(FileModel $fileModel, array $options = []) {
 
 		// If we're deleting a derived file.
-		if($options) {
+		if ($options) {
 			unlink($this->generateFilePath($fileModel, $options));
-		}
-
-		// This is the original image, so delete any derivations that may exist as well.
+		} // This is the original image, so delete any derivations that may exist as well.
 		else {
 			$pattern = sprintf('%s/%s-*.%s',
 				$this->root,

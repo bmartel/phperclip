@@ -175,7 +175,7 @@ class Service {
 		// and the current action scope.
 
 		// Run any pre-save file processing, such as validation
-		if (!$file = $this->processManager->dispatch($file, 'onBeforeSave', $options)) {
+		if (($file = $this->processManager->dispatch($file, 'onBeforeSave', $options)) == false) {
 			return null;
 		}
 
@@ -226,7 +226,7 @@ class Service {
 		// Determine if there are any registered processors which know of this file type
 		// and the current action scope.
 
-		if (!$fileModel = $this->processManager->dispatch($fileModel, 'onDelete', $options)) {
+		if (($fileModel = $this->processManager->dispatch($fileModel, 'onDelete', $options)) == false) {
 			return null;
 		}
 
@@ -319,7 +319,7 @@ class Service {
 		// Determine if there are any registered processors which know of this file type
 		// and the current action scope.
 
-		if (!$fileModel = $this->processManager->dispatch($fileModel, 'onMove')) {
+		if (($fileModel = $this->processManager->dispatch($fileModel, 'onMove')) == false) {
 			return null;
 		}
 
@@ -408,7 +408,7 @@ class Service {
 	protected function saveFile(File $file, FileModel $fileModel, array $options = []) {
 
 		// Run any file manipulation processors
-		if (!$file = $this->processManager->dispatch($file, 'onSave', $options)) {
+		if (($file = $this->processManager->dispatch($file, 'onSave', $options)) == false) {
 			// If something fails inside the processors, clean up the file instances
 			$this->delete($file, $options);
 			return null;
