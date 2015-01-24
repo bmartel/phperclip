@@ -4,13 +4,19 @@ use TippingCanoe\Phperclip\Model\File as FileModel;
 use Symfony\Component\HttpFoundation\File\File;
 
 /**
- * Interface Driver
+ * Interface StorageDriver
  *
  * Represents a class that can be used as a storage driver for files.
- *
- * @package TippingCanoe\Phperclip\Storage
  */
-interface Driver {
+interface StorageDriver {
+
+	/**
+	 * Allows switching of active filesystem drivers.
+	 *
+	 * @param $driver
+	 * @return mixed
+	 */
+	public function useDriver($driver);
 
 	/**
 	 * Saves a file.

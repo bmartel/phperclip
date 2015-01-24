@@ -1,5 +1,7 @@
 <?php namespace TippingCanoe\Phperclip;
 
+
+use TippingCanoe\Phperclip\Contracts\StorageDriver;
 use TippingCanoe\Phperclip\Model\File as FileModel;
 use TippingCanoe\Phperclip\Model\Clippable;
 use TippingCanoe\Phperclip\Processes\ProcessManager;
@@ -14,57 +16,31 @@ class Service {
 	protected $fileRepository;
 
 	/**
-	 * @var \TippingCanoe\Phperclip\Storage\Driver[]
-	 */
-	protected $storageDrivers;
-
-	/**
-	 * @var \TippingCanoe\Phperclip\Storage\Driver
-	 */
-	protected $currentDriver;
-
-	/**
 	 * @var \TippingCanoe\Phperclip\Processes\ProcessManager
 	 */
 	protected $processManager;
 
 	/**
+	 * @var StorageDriver
+	 */
+	protected $storageDriver;
+
+
+	/**
 	 * @param FileRepository $fileRepository
 	 * @param ProcessManager $processManager
-	 * @param \TippingCanoe\Phperclip\Storage\Driver[] $storageDrivers
-	 * @throws \Exception
+	 * @param StorageDriver $storageDriver
 	 */
 	public function __construct(
 		FileRepository $fileRepository,
 		ProcessManager $processManager,
-		array $storageDrivers
+		StorageDriver $storageDriver
 	) {
-
 		$this->fileRepository = $fileRepository;
 		$this->processManager = $processManager;
-
-		if (empty($storageDrivers)) {
-			throw new \Exception('You must configure at least one file storage driver for Phperclip to use.');
-		}
-
-		$this->storageDrivers = $storageDrivers;
-		$this->currentDriver = current($storageDrivers);
-
+		$this->storageDriver = $storageDriver;
 	}
 
-	//
-	// General Methods
-	//
-
-	/**
-	 * Select which driver Phperclip uses by default.
-	 *
-	 * @param $abstract
-	 */
-	public function useDriver($abstract) {
-
-		$this->currentDriver = $this->storageDrivers[$abstract];
-	}
 
 	/**
 	 * Simply retrieves a file by id.
@@ -362,12 +338,16 @@ class Service {
 	/**
 	 * Gets the current or specified driver.
 	 *
-	 * @param null $abstract
-	 * @return \TippingCanoe\Phperclip\Contracts\Driver
+	 * @param null $driver
+	 * @return StorageDriver
 	 */
-	protected function getDriver($abstract = null) {
+	protected function getDriver($driver = null) {
 
-		return $abstract ? $this->storageDrivers[$abstract] : $this->currentDriver;
+		if($driver) {
+			$this->storageDriver = $this->storageDriver->useDriver($driver);
+		}
+
+		return $this->storageDriver;
 	}
 
 	/**

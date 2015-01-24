@@ -13,7 +13,7 @@ class FileNameGenerator implements Contracts\FileNameGenerator {
 
 	public function fileName(FileModel $file, array $options = []) {
 
-		return sprintf('%d-%s.%s',
+		return sprintf('%d/%s.%s',
 			$file->getKey(),
 			$this->generateHash($file, $options),
 			$this->mimeResolver->getExtension($file->getMimeType())
