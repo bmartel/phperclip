@@ -13,9 +13,9 @@
 	"require": {
 		"php": ">=5.4.0",
 		"aws/aws-sdk-php": "2.5.*",
-		"illuminate/http": "4.2.*",
-        "illuminate/database": "4.2.*",
-        "illuminate/config": "4.2.*",
+		"illuminate/http": "4.*|5.*",
+        "illuminate/database": "4.*|5.*",
+        "illuminate/config": "4.*|5.*",
 		"intervention/image": "2.0.*"
 	},
 	"require-dev" : {
@@ -29,8 +29,8 @@
 		"classmap": [
 			"src/migrations"
 		],
-		"psr-0": {
-			"TippingCanoe\\Phperclip": "src/"
+		"psr-4": {
+			"TippingCanoe\\Phperclip\\": "src/"
 		}
 	},
 	"minimum-stability": "dev"

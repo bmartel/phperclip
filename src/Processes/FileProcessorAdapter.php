@@ -1,13 +1,13 @@
 <?php namespace TippingCanoe\Phperclip\Processes;
 
-use Illuminate\Support\Contracts\MessageProviderInterface;
+use Illuminate\Contracts\Support\MessageProvider;
 use Illuminate\Support\MessageBag;
 use Symfony\Component\HttpFoundation\File\File;
 use TippingCanoe\Phperclip\Contracts\FileProcessor;
 use TippingCanoe\Phperclip\Model\File as FileModel;
 use Validator;
 
-class FileProcessorAdapter implements FileProcessor, MessageProviderInterface {
+class FileProcessorAdapter implements FileProcessor, MessageProvider {
 
 	protected static $messages = [];
 
@@ -86,7 +86,7 @@ class FileProcessorAdapter implements FileProcessor, MessageProviderInterface {
 
 		if (is_string($messages)) {
 			$messages = [$messages];
-		} elseif ($messages instanceof MessageProviderInterface) {
+		} elseif ($messages instanceof MessageProvider) {
 			$messages = $messages->getMessageBag()->getMessages();
 		} else {
 			return null; // We don't have anything to add in this case.

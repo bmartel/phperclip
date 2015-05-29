@@ -112,7 +112,7 @@ You will most likely want to pre-configure filter chains for your project so tha
    * setPreserveRatio(true)
    * etc...
 
-If you're unsure as to where you should store your filter profiles, it's suggested that you place them in the `filters.php` file that has also been created for you when you published Phperclip's configuration earlier.  This will allow you to vary the filter configurations along with your environments and will make retrieval as simple as `Config::get('phperclip::filters.filter_name')`
+If you're unsure as to where you should store your filter profiles, it's suggested that you place them in the `filters` array that has also been created for you when you published Phperclip's configuration earlier.  This will allow you to vary the filter configurations along with your environments and will make retrieval as simple as `Config::get('phperclip.filters.filter_name')`
 
 
 ## Usage

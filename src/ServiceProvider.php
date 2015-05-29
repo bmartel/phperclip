@@ -3,6 +3,7 @@
 namespace TippingCanoe\Phperclip;
 
 
+use Aws\S3\S3Client;
 use TippingCanoe\Phperclip\Processes\ProcessManager;
 use TippingCanoe\Phperclip\Service as PhperclipService;
 
@@ -23,7 +24,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 	 */
 	public function boot()
 	{
-		$this->package('tippingcanoe/phperclip');
+		$this->handleConfigs();
+		$this->handleMigrations();
 
 		// Register the filename generator ahead of the other registrations
 		$this->registerFileNameGenerator();
@@ -67,23 +69,23 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 		//
 		// Amazon S3
 		//
-		if ($s3Config = $config->get('phperclip::s3')) {
+		if ($s3Config = $config->get('phperclip.s3')) {
 			$this->app->bind('Aws\S3\S3Client', function ($app) use ($s3Config) {
-				return \Aws\S3\S3Client::factory($s3Config);
+				return S3Client::factory($s3Config);
 			});
 		}
 	}
 
 	private function registerFileNameGenerator()
 	{
-		$this->app->bind('TippingCanoe\Phperclip\Contracts\FileNameGenerator', $this->app->make('config')->get('phperclip::filename_generator'));
+		$this->app->bind('TippingCanoe\Phperclip\Contracts\FileNameGenerator', $this->app->make('config')->get('phperclip.filename_generator'));
 	}
 
 	private function configureStorageDrivers($app, $config)
 	{
 		// Run through and call each config option as a setter on the storage method.
 		$storageDrivers = [];
-		foreach ($config->get('phperclip::storage', []) as $abstract => $driverConfig) {
+		foreach ($config->get('phperclip.storage', []) as $abstract => $driverConfig) {
 
 			$driver = $app->make($abstract);
 
@@ -101,7 +103,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 	private function registerFileProcessors($app, $config)
 	{
 
-		if ($processorConfig = $config->get('phperclip::processors')) {
+		if ($processorConfig = $config->get('phperclip.processors')) {
 
 			$processors = [];
 
@@ -114,4 +116,18 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 			});
 		}
 	}
+
+
+	private function handleConfigs() {
+
+		$configPath = __DIR__ . '/../config/phperclip.php';
+		$this->publishes([$configPath => config_path('phperclip.php')]);
+		$this->mergeConfigFrom($configPath, 'phperclip');
+	}
+
+	private function handleMigrations() {
+
+		$this->publishes([__DIR__ . '/../migrations' => base_path('database/migrations')]);
+	}
+
 }
