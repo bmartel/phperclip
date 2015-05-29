@@ -27,7 +27,7 @@
 	},
 	"autoload": {
 		"classmap": [
-			"src/migrations"
+			"migrations"
 		],
 		"psr-4": {
 			"TippingCanoe\\Phperclip\\": "src/"
