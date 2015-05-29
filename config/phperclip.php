@@ -1,4 +1,8 @@
-<?php return [
+<?php
+
+use Illuminate\Support\Facades\Request;
+
+return [
 
 	// Class used to generate file names for files
 	'filename_generator' => 'TippingCanoe\Phperclip\FileNameGenerator',
