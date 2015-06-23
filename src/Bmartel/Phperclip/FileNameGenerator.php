@@ -1,6 +1,6 @@
-<?php namespace TippingCanoe\Phperclip;
+<?php namespace Bmartel\Phperclip;
 
-use TippingCanoe\Phperclip\Model\File as FileModel;
+use Bmartel\Phperclip\Model\File as FileModel;
 
 class FileNameGenerator implements Contracts\FileNameGenerator {
 

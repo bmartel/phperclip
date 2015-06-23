@@ -1,6 +1,6 @@
-<?php namespace TippingCanoe\Phperclip\Contracts;
+<?php namespace Bmartel\Phperclip\Contracts;
 
-use TippingCanoe\Phperclip\Model\File as FileModel;
+use Bmartel\Phperclip\Model\File as FileModel;
 use Symfony\Component\HttpFoundation\File\File;
 
 /**
@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\File\File;
  *
  * Represents a class that can be used as a storage driver for files.
  *
- * @package TippingCanoe\Phperclip\Storage
+ * @package Bmartel\Phperclip\Storage
  */
 interface Driver {
 

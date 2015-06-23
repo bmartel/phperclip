@@ -1,4 +1,4 @@
-<?php namespace TippingCanoe\Phperclip;
+<?php namespace Bmartel\Phperclip;
 
 use Illuminate\Support\Facades\Facade as Base;
 
@@ -10,7 +10,7 @@ class Facade extends Base {
 	 * @return string
 	 */
 	protected static function getFacadeAccessor() {
-		return 'TippingCanoe\Phperclip\Service';
+		return 'Bmartel\Phperclip\Service';
 	}
 
 }

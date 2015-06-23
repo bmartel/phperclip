@@ -1,4 +1,4 @@
-<?php namespace TippingCanoe\Phperclip;
+<?php namespace Bmartel\Phperclip;
 
 class MimeResolver {
 

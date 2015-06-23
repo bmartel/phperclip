@@ -1,12 +1,12 @@
 <?php return [
 
 	// Class used to generate file names for files
-	'filename_generator' => 'TippingCanoe\Phperclip\FileNameGenerator',
+	'filename_generator' => 'Bmartel\Phperclip\FileNameGenerator',
 
 	// Register File Processors
 	'processors' => [
 
-		'TippingCanoe\Phperclip\Processes\ImageProcessor',
+		'Bmartel\Phperclip\Processes\ImageProcessor',
 
 		/*
 		 * Implement your own file specific processing by adding more processors here
@@ -17,7 +17,7 @@
 	// Multiple storage options.
 	'storage' => [
 
-		'TippingCanoe\Phperclip\Storage\Filesystem' => [
+		'Bmartel\Phperclip\Storage\Filesystem' => [
 
 			// Directory that Phperclip can manage everything under.
 			'root' => public_path() . '/files/uploaded',
@@ -29,7 +29,7 @@
 
 		// Amazon S3 Storage Driver
 		/*
-		'TippingCanoe\Phperclip\Storage\S3' => [
+		'Bmartel\Phperclip\Storage\S3' => [
 			'bucket' => 'clipped_files'
 		],
 		*/

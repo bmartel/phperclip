@@ -1,6 +1,6 @@
-<?php namespace TippingCanoe\Phperclip\Storage;
+<?php namespace Bmartel\Phperclip\Storage;
 
-use TippingCanoe\Phperclip\Model\File as FileModel;
+use Bmartel\Phperclip\Model\File as FileModel;
 use Symfony\Component\HttpFoundation\File\File;
 
 class Filesystem extends Base {

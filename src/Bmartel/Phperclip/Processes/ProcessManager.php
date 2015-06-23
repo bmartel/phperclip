@@ -1,15 +1,15 @@
-<?php namespace TippingCanoe\Phperclip\Processes;
+<?php namespace Bmartel\Phperclip\Processes;
 
 use Illuminate\Session\SessionManager;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
 use Symfony\Component\HttpFoundation\File\File;
-use TippingCanoe\Phperclip\Model\File as FileModel;
+use Bmartel\Phperclip\Model\File as FileModel;
 
 class ProcessManager {
 
 	/**
-	 * @var \TippingCanoe\Phperclip\Processes\FileProcessorAdapter[]
+	 * @var \Bmartel\Phperclip\Processes\FileProcessorAdapter[]
 	 */
 	protected $processors;
 
@@ -25,7 +25,7 @@ class ProcessManager {
 	}
 
 	/**
-	 * @param \Symfony\Component\HttpFoundation\File\File|\TippingCanoe\Phperclip\Model\File $file
+	 * @param \Symfony\Component\HttpFoundation\File\File|\Bmartel\Phperclip\Model\File $file
 	 * @param $action
 	 * @param array $options
 	 * @return bool
@@ -64,7 +64,7 @@ class ProcessManager {
 	 * Retrieve all processors which are registered to act on the mimetype.
 	 *
 	 * @param $mimeType
-	 * @return null|array|\TippingCanoe\Phperclip\Processes\FileProcessorAdapter[]
+	 * @return null|array|\Bmartel\Phperclip\Processes\FileProcessorAdapter[]
 	 */
 	protected function getProcessorsFor($mimeType) {
 		if(empty($this->processors)) return null;

@@ -1,37 +1,37 @@
-<?php namespace TippingCanoe\Phperclip;
+<?php namespace Bmartel\Phperclip;
 
-use TippingCanoe\Phperclip\Model\File as FileModel;
-use TippingCanoe\Phperclip\Model\Clippable;
-use TippingCanoe\Phperclip\Processes\ProcessManager;
-use TippingCanoe\Phperclip\Contracts\FileRepository;
+use Bmartel\Phperclip\Model\File as FileModel;
+use Bmartel\Phperclip\Model\Clippable;
+use Bmartel\Phperclip\Processes\ProcessManager;
+use Bmartel\Phperclip\Contracts\FileRepository;
 use Symfony\Component\HttpFoundation\File\File;
 
 class Service {
 
 	/**
-	 * @var \TippingCanoe\Phperclip\Contracts\FileRepository
+	 * @var \Bmartel\Phperclip\Contracts\FileRepository
 	 */
 	protected $fileRepository;
 
 	/**
-	 * @var \TippingCanoe\Phperclip\Storage\Driver[]
+	 * @var \Bmartel\Phperclip\Storage\Driver[]
 	 */
 	protected $storageDrivers;
 
 	/**
-	 * @var \TippingCanoe\Phperclip\Storage\Driver
+	 * @var \Bmartel\Phperclip\Storage\Driver
 	 */
 	protected $currentDriver;
 
 	/**
-	 * @var \TippingCanoe\Phperclip\Processes\ProcessManager
+	 * @var \Bmartel\Phperclip\Processes\ProcessManager
 	 */
 	protected $processManager;
 
 	/**
 	 * @param FileRepository $fileRepository
 	 * @param ProcessManager $processManager
-	 * @param \TippingCanoe\Phperclip\Storage\Driver[] $storageDrivers
+	 * @param \Bmartel\Phperclip\Storage\Driver[] $storageDrivers
 	 * @throws \Exception
 	 */
 	public function __construct(
@@ -363,7 +363,7 @@ class Service {
 	 * Gets the current or specified driver.
 	 *
 	 * @param null $abstract
-	 * @return \TippingCanoe\Phperclip\Contracts\Driver
+	 * @return \Bmartel\Phperclip\Contracts\Driver
 	 */
 	protected function getDriver($abstract = null) {
 

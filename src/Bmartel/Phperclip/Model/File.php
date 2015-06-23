@@ -1,4 +1,4 @@
-<?php namespace TippingCanoe\Phperclip\Model;
+<?php namespace Bmartel\Phperclip\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;

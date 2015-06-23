@@ -1,5 +1,5 @@
 <?php
-namespace TippingCanoe\Phperclip\Contracts;
+namespace Bmartel\Phperclip\Contracts;
 
 use Symfony\Component\HttpFoundation\File\File;
 

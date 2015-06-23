@@ -1,5 +1,5 @@
 suites:
    phperclip_suite:
-      namespace: TippingCanoe\Phperclip
+      namespace: Bmartel\Phperclip
       src_path:  src
       spec_path: tests
