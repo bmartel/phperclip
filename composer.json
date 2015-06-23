@@ -1,12 +1,12 @@
 {
-	"name": "tippingcanoe/phperclip",
+	"name": "bmartel/phperclip",
 	"description": "File attachment and management for Eloquent models",
 	"keywords": ["file","model","eloquent","attachment"],
 	"homepage": "https://github.com/bmartel/phperclip",
 	"authors": [
 		{
 			"name": "Brandon Martel",
-			"email": "b.martel@tippingcanoe.com"
+			"email": "brandonmartel@gmail.com"
 		}
 	],
 	"license": "MIT",
@@ -30,7 +30,7 @@
 			"migrations"
 		],
 		"psr-4": {
-			"TippingCanoe\\Phperclip\\": "src/"
+			"Bmartel\\Phperclip\\": "src/"
 		}
 	},
 	"minimum-stability": "dev"

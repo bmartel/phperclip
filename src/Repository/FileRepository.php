@@ -1,8 +1,8 @@
-<?php namespace TippingCanoe\Phperclip\Repository;
+<?php namespace Bmartel\Phperclip\Repository;
 
-use TippingCanoe\Phperclip\Contracts\FileRepository as FileRepositoryContract;
-use TippingCanoe\Phperclip\Model\Clippable;
-use TippingCanoe\Phperclip\Model\File as FileModel;
+use Bmartel\Phperclip\Contracts\FileRepository as FileRepositoryContract;
+use Bmartel\Phperclip\Model\Clippable;
+use Bmartel\Phperclip\Model\File as FileModel;
 
 class FileRepository implements FileRepositoryContract {
 

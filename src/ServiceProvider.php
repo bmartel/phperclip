@@ -1,11 +1,11 @@
 <?php
 
-namespace TippingCanoe\Phperclip;
+namespace Bmartel\Phperclip;
 
 
 use Aws\S3\S3Client;
-use TippingCanoe\Phperclip\Processes\ProcessManager;
-use TippingCanoe\Phperclip\Service as PhperclipService;
+use Bmartel\Phperclip\Processes\ProcessManager;
+use Bmartel\Phperclip\Service as PhperclipService;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
@@ -41,9 +41,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 		/** @var \Illuminate\Config\Repository $config */
 		$config = $this->app->make('config');
 
-		$this->app->bind('TippingCanoe\Phperclip\Contracts\FileRepository', 'TippingCanoe\Phperclip\Repository\FileRepository');
+		$this->app->bind('Bmartel\Phperclip\Contracts\FileRepository', 'Bmartel\Phperclip\Repository\FileRepository');
 
-		$this->app->bindShared('TippingCanoe\Phperclip\Service', function ($app) use ($config) {
+		$this->app->bindShared('Bmartel\Phperclip\Service', function ($app) use ($config) {
 
 			// Register the amazon aws client
 			$this->registerAwsClient($config);
@@ -56,8 +56,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
 			// Register the Phperclip service
 			return new PhperclipService(
-				$app->make('TippingCanoe\Phperclip\Contracts\FileRepository'),
-				$app->make('TippingCanoe\Phperclip\Processes\ProcessManager'),
+				$app->make('Bmartel\Phperclip\Contracts\FileRepository'),
+				$app->make('Bmartel\Phperclip\Processes\ProcessManager'),
 				$storageDrivers
 			);
 
@@ -78,7 +78,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
 	private function registerFileNameGenerator()
 	{
-		$this->app->bind('TippingCanoe\Phperclip\Contracts\FileNameGenerator', $this->app->make('config')->get('phperclip.filename_generator'));
+		$this->app->bind('Bmartel\Phperclip\Contracts\FileNameGenerator', $this->app->make('config')->get('phperclip.filename_generator'));
 	}
 
 	private function configureStorageDrivers($app, $config)
@@ -111,7 +111,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 				$processors[] = $app->make($processor);
 			}
 
-			$this->app->bindShared('TippingCanoe\Phperclip\Processes\ProcessManager', function () use ($app, $processors) {
+			$this->app->bindShared('Bmartel\Phperclip\Processes\ProcessManager', function () use ($app, $processors) {
 				return new ProcessManager($app['session'], $processors);
 			});
 		}

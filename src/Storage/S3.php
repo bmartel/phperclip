@@ -1,10 +1,10 @@
-<?php namespace TippingCanoe\Phperclip\Storage;
+<?php namespace Bmartel\Phperclip\Storage;
 
 use Symfony\Component\HttpFoundation\File\File;
-use TippingCanoe\Phperclip\Contracts\Driver;
-use TippingCanoe\Phperclip\FileNameGenerator;
-use TippingCanoe\Phperclip\Model\File as FileModel;
-use TippingCanoe\Phperclip\MimeResolver;
+use Bmartel\Phperclip\Contracts\Driver;
+use Bmartel\Phperclip\FileNameGenerator;
+use Bmartel\Phperclip\Model\File as FileModel;
+use Bmartel\Phperclip\MimeResolver;
 use Aws\S3\S3Client;
 use Aws\S3\Enum\CannedAcl;
 

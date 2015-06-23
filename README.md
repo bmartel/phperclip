@@ -16,31 +16,31 @@ Features:
 
 To get Phperclip ready for use in your project, take the usual steps for setting up a Laravel 4 pacakge.
 
- * Add `tippingcanoe/phperclip` to your `composer.json` file.
+ * Add `bmartel/phperclip` to your `composer.json` file.
  * Run `composer update` at the root of your project.
  * Edit your `app/config/app.php` file and add: 
-   * `'TippingCanoe\Phperclip\ServiceProvider',` into the `providers` array 
-   * `'Phperclip' => 'TippingCanoe\Phperclip\Facade',` into the `aliases` array
- * Run the migration `./artisan migrate --package="tippingcanoe/phperclip"`
- * Take a project-level copy of the configuration `./artisan config:publish tippingcanoe/phperclip`
+   * `'Bmartel\Phperclip\ServiceProvider',` into the `providers` array 
+   * `'Phperclip' => 'Bmartel\Phperclip\Facade',` into the `aliases` array
+ * Run the migration `./artisan migrate --package="bmartel/phperclip"`
+ * Take a project-level copy of the configuration `./artisan config:publish bmartel/phperclip`
 
 ```
-Note: If you are using type-hinted dependency injection in your project, as a convenience Phperclip binds the type `TippingCanoe\Phperclip\Service` in the container.
+Note: If you are using type-hinted dependency injection in your project, as a convenience Phperclip binds the type `Bmartel\Phperclip\Service` in the container.
 ```
 
 ## Configuration
 
 ### File Name Generation
-File names are generated using an injected class which implements `TippingCanoe\Phperclip\Contracts\FileNameGenerator`. By default, Phperclip uses its own implementation of the file name generator `TippingCanoe\Phperclip\FileNameGenerator`. It is set in the config as:
+File names are generated using an injected class which implements `Bmartel\Phperclip\Contracts\FileNameGenerator`. By default, Phperclip uses its own implementation of the file name generator `Bmartel\Phperclip\FileNameGenerator`. It is set in the config as:
 
 ```
-	'filename_generator' => 'TippingCanoe\Phperclip\FileNameGenerator'
+	'filename_generator' => 'Bmartel\Phperclip\FileNameGenerator'
 ```
 
 This implementation takes an md5 hash of the json result of the files options and attributes. If you wish to generate the filename using other means, create your own implementation, and include the class as the value of filename_generator in Phperclip's `config.php` file.
 
 ### Storage
-If you open the copy of `config.php` that was created during setup, you will see it is already populated with configuration options for the most typical of setups.  The `TippingCanoe\Phperclip\Storage\Filesystem` driver is the most basic which simply stores image files in your site's public directory.
+If you open the copy of `config.php` that was created during setup, you will see it is already populated with configuration options for the most typical of setups.  The `Bmartel\Phperclip\Storage\Filesystem` driver is the most basic which simply stores image files in your site's public directory.
 
 #### Amazon S3 Driver
 Replace the filesystem driver configuration in the 'config.php' file with the Amazon AWS configuration below.
@@ -48,7 +48,7 @@ Replace the filesystem driver configuration in the 'config.php' file with the Am
 [
 	'storage' =>
 	[
-		'TippingCanoe\Phperclip\Storage\S3' =>
+		'Bmartel\Phperclip\Storage\S3' =>
 		[
 			'aws_key' => 'YOUR_KEY_HERE',
 			'aws_secret' => 'YOUR_SECRET_HERE',
@@ -73,7 +73,7 @@ An included ImageProcessor has been provided as both a showcase the power of the
 ### Image Filters
 Phperclip's filtering chains are a powerful feature that allow you to orchestrate arbitrary combinations of manipulations when saving or retrieving images.  When processing a chain, Phperclip does the following for each filter in the chain:
 
- * Attempts to instantiate the indicated class which must implement `TippingCanoe\Phperclip\Contracts\Filter`
+ * Attempts to instantiate the indicated class which must implement `Bmartel\Phperclip\Contracts\Filter`
  * If the filter's configuration was an array, each key in the second index will be called as setter methods on the subclass
  * Calls the method `run` on the subclass passing in the original image and the database entry for the image
  
@@ -82,10 +82,10 @@ You will most likely want to pre-configure filter chains for your project so tha
 ```
 [
 
-	'TippingCanoe\Phperclip\Processes\Image\FixRotation',
+	'Bmartel\Phperclip\Processes\Image\FixRotation',
 	
 	[
-		'TippingCanoe\Phperclip\Processes\Image\Resize',
+		'Bmartel\Phperclip\Processes\Image\Resize',
 		[
 			'width' => 300,
 			'height' => 300,
@@ -94,7 +94,7 @@ You will most likely want to pre-configure filter chains for your project so tha
 	],
 	
 	[
-		'TippingCanoe\Phperclip\Processes\Image\Watermark',
+		'Bmartel\Phperclip\Processes\Image\Watermark',
 		[
 			'source_path' => sprintf('%s/logo.png', __DIR__),
 			'anchor' => 'bottom-right'
@@ -124,7 +124,7 @@ The two optional, secondary pieces of information that Phperclip makes use of ar
 
 ### Trait
 
-If you plan on attaching files to a model (User, Item, ImageGallery), that model must implement the interface `TippingCanoe\Phperclip\Model\Clippable`.  This will mandate a method that you can either implement yourself or conveniently keep in sync with Phperclip by using the trait `TippingCanoe\Phperclip\Model\ClippableImpl`.
+If you plan on attaching files to a model (User, Item, ImageGallery), that model must implement the interface `Bmartel\Phperclip\Model\Clippable`.  This will mandate a method that you can either implement yourself or conveniently keep in sync with Phperclip by using the trait `Bmartel\Phperclip\Model\ClippableImpl`.
 
 
 ### Saving
@@ -133,17 +133,17 @@ Saving files is done via the Phperclip service which can either be accessed via 
 
 ```
 	/** @var \Symfony\Component\HttpFoundation\File\File $file */
-	/** @var \TippingCanoe\Phperclip\Model\Clippable $clippable */
+	/** @var \Bmartel\Phperclip\Model\Clippable $clippable */
 
 	$options = [
 		'attributes' => ['slot' => 1]
 	];
 
-	/** @var \TippingCanoe\Phperclip\Model\File $file */
+	/** @var \Bmartel\Phperclip\Model\File $file */
 	$file = Phperclip::saveFromFile($file, $clippable, $options);
 ```
 
-Phperclip will return an instance of `TippingCanoe\Phperclip\Model\File` upon a successful save.  If you supplied one, the file record will be associated with a clippable.  Any additional attributes will be passed through to the save as well via the attributes key of the options array.
+Phperclip will return an instance of `Bmartel\Phperclip\Model\File` upon a successful save.  If you supplied one, the file record will be associated with a clippable.  Any additional attributes will be passed through to the save as well via the attributes key of the options array.
 
 ### Retrieval
 
@@ -162,7 +162,7 @@ Most of the time you will have at least one of these three pieces of information
 ```
 
 You can also retrieve a collection of files, optionally by the clippable it belongs to, file mimetype, or slot.
-Phperclip will return a collection of `TippingCanoe\Phperclip\Model\File`.
+Phperclip will return a collection of `Bmartel\Phperclip\Model\File`.
 
 ```
   Phperclip::getFilesFor($clippable, $mimetypes, $slot);
@@ -173,7 +173,7 @@ When retrieving files from Phperclip, it's helpful to remember that anywhere you
 
 ### Slots
 
-Phperclip features a concept known as slots which at it's very core is just a string value.  Slots are used to order and/or key files by their clippable.  There are helper scopes on the `TippingCanoe\Phperclip\Model\File` class to help with retrieving files based on their slot values.
+Phperclip features a concept known as slots which at it's very core is just a string value.  Slots are used to order and/or key files by their clippable.  There are helper scopes on the `Bmartel\Phperclip\Model\File` class to help with retrieving files based on their slot values.
 
 ```
 Note: When storing files without a clippable (globally), keep in mind that they are all sharing the same slot scope and cannot have duplicates.
@@ -201,7 +201,7 @@ Here's a sample of the schema used when performing batch operations:
 	];
 
 	/** @var \Symfony\Component\HttpFoundation\File\File[] $newFiles */
-	/** @var \TippingCanoe\Phperclip\Model\Clippable $clippable */
+	/** @var \Bmartel\Phperclip\Model\Clippable $clippable */
 
 	Phperclip::batch($operations, $newFiles, $clippable);
 
@@ -222,23 +222,23 @@ It's important to note that slot keys cannot be duplicated in this schema, so it
 
 ## Drivers
 
-Creating a driver is as simple as extending the class `TippingCanoe\Phperclip\Storage\Base`.  You can also use `TippingCanoe\Phperclip\Storage\Filesystem` as a reference.
+Creating a driver is as simple as extending the class `Bmartel\Phperclip\Storage\Base`.  You can also use `Bmartel\Phperclip\Storage\Filesystem` as a reference.
 
 ## Processors
 
 To make the magic happen with files, you will want to implement a dedicated FileProcessor to handle tasks which may need to happen during the lifecycle of the file service. You specify in the class which file mimetypes the processor will execute for, and provide the processing in the life cycle methods as appropriate for your own requirements.
 
-To begin, implement the interface `TippingCanoe\Phperclip\Contracts\FileProcessor`. For some free extras like a built in file validation and flash messaging, instead extend the class `TippingCanoe\Phperclip\Processes\FileProcessorAdapter`.
+To begin, implement the interface `Bmartel\Phperclip\Contracts\FileProcessor`. For some free extras like a built in file validation and flash messaging, instead extend the class `Bmartel\Phperclip\Processes\FileProcessorAdapter`.
 
-The Image Filters are actually handled via an included FileProcessor `TippingCanoe\Phperclip\Processes\ImageProcessor`! You can use that as a guideline when creating your own FileProcessors.
+The Image Filters are actually handled via an included FileProcessor `Bmartel\Phperclip\Processes\ImageProcessor`! You can use that as a guideline when creating your own FileProcessors.
 
 ## Image Filters
 
-It's very easy to create your own image filters within your own project or packages. Just implement the interface `TippingCanoe\Phperclip\Contracts\Filter`.
+It's very easy to create your own image filters within your own project or packages. Just implement the interface `Bmartel\Phperclip\Contracts\Filter`.
 
 The only rule is that filter subclasses must perform their manipulations to the file provided without moving, renaming or deleting it - overwriting is fine.  The `run` method is not expected to return a value.
 
-See `TippingCanoe\Phperclip\Processes\Image\Resize` and `TippingCanoe\Phperclip\Processes\Image\FixRotation` as guidelines when creating your own image filters.
+See `Bmartel\Phperclip\Processes\Image\Resize` and `Bmartel\Phperclip\Processes\Image\FixRotation` as guidelines when creating your own image filters.
 
 
 ## Issues

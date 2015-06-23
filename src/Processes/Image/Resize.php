@@ -1,10 +1,10 @@
 <?php
-namespace TippingCanoe\Phperclip\Processes\Image;
+namespace Bmartel\Phperclip\Processes\Image;
 
 
 use Intervention\Image\ImageManagerStatic;
 use Symfony\Component\HttpFoundation\File\File;
-use TippingCanoe\Phperclip\Contracts\Filter;
+use Bmartel\Phperclip\Contracts\Filter;
 
 class Resize implements Filter {
 

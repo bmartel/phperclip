@@ -1,9 +1,9 @@
-<?php namespace TippingCanoe\Phperclip\Storage;
+<?php namespace Bmartel\Phperclip\Storage;
 
 
-use TippingCanoe\Phperclip\Contracts\Driver;
-use TippingCanoe\Phperclip\Contracts\FileNameGenerator;
-use TippingCanoe\Phperclip\MimeResolver;
+use Bmartel\Phperclip\Contracts\Driver;
+use Bmartel\Phperclip\Contracts\FileNameGenerator;
+use Bmartel\Phperclip\MimeResolver;
 
 abstract class Base implements Driver{
 

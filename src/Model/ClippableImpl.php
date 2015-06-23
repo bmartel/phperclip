@@ -1,9 +1,9 @@
-<?php namespace TippingCanoe\Phperclip\Model;
+<?php namespace Bmartel\Phperclip\Model;
 
 trait ClippableImpl {
 
 	public function clippedFiles() {
 
-		return $this->morphMany('TippingCanoe\Phperclip\Model\File', 'clippable');
+		return $this->morphMany('Bmartel\Phperclip\Model\File', 'clippable');
 	}
 } 

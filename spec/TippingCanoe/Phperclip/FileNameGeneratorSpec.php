@@ -1,11 +1,11 @@
 <?php
 
-namespace spec\TippingCanoe\Phperclip;
+namespace spec\Bmartel\Phperclip;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use TippingCanoe\Phperclip\MimeResolver;
-use TippingCanoe\Phperclip\Model\File as FileModel;
+use Bmartel\Phperclip\MimeResolver;
+use Bmartel\Phperclip\Model\File as FileModel;
 
 class FileNameGeneratorSpec extends ObjectBehavior
 {
@@ -16,7 +16,7 @@ class FileNameGeneratorSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('TippingCanoe\Phperclip\FileNameGenerator');
+        $this->shouldHaveType('Bmartel\Phperclip\FileNameGenerator');
     }
 
 	function it_generates_a_name_for_a_file_according_to_its_attributes_and_options(FileModel $fileModel) {

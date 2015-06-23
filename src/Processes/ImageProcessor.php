@@ -1,8 +1,8 @@
-<?php namespace TippingCanoe\Phperclip\Processes;
+<?php namespace Bmartel\Phperclip\Processes;
 
 use App;
 use Symfony\Component\HttpFoundation\File\File;
-use TippingCanoe\Phperclip\Contracts\Filter;
+use Bmartel\Phperclip\Contracts\Filter;
 use Validator;
 
 class ImageProcessor extends FileProcessorAdapter {
@@ -46,7 +46,7 @@ class ImageProcessor extends FileProcessorAdapter {
 		foreach ($options['modifications'] as $filter) {
 
 			/**
-			 * @var \TippingCanoe\Phperclip\Contracts\Filter $abstractFilterClass
+			 * @var \Bmartel\Phperclip\Contracts\Filter $abstractFilterClass
 			 */
 			if (!empty($filter) && is_array($filter)) {
 				// Set any class property configs

@@ -1,13 +1,13 @@
 <?php
 
-namespace spec\TippingCanoe\Phperclip\Processes;
+namespace spec\Bmartel\Phperclip\Processes;
 
 use Illuminate\Session\SessionManager;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\HttpFoundation\File\File;
-use TippingCanoe\Phperclip\Model\File as FileModel;
-use TippingCanoe\Phperclip\Processes\FileProcessorAdapter;
+use Bmartel\Phperclip\Model\File as FileModel;
+use Bmartel\Phperclip\Processes\FileProcessorAdapter;
 
 class ProcessManagerSpec extends ObjectBehavior {
 
@@ -22,7 +22,7 @@ class ProcessManagerSpec extends ObjectBehavior {
 
 	function it_is_initializable() {
 
-		$this->shouldHaveType('TippingCanoe\Phperclip\Processes\ProcessManager');
+		$this->shouldHaveType('Bmartel\Phperclip\Processes\ProcessManager');
 	}
 
 	function it_can_dispatch_processors_for_file_actions(File $file) {
