@@ -25,6 +25,9 @@
 	"suggest": {
 		"cviebrock/image-validator": "Extra Laravel validation rules for dealing with images."
 	},
+    "replace": {
+      "tippingcanoe/phperclip":"1.1.*"
+    },
 	"autoload": {
 		"classmap": [
 			"src/migrations"
